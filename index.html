@@ -77,20 +77,34 @@
     <button onclick="pwaCacher.Cache()">Check for updates</button>
     <button onclick="pwaCacher.ClearCache()">Remove app cache</button>
   </div>
-  <script src="pwa-cacher.js"></script>
+  <div class="void void-2x"></div>
+ 
+  <button onclick="resetData()">Reset data</button>
 </div>
-
+    
+  <script src="pwa-cacher.js"></script>
 <script>
   
   let $ = document.querySelector.bind(document);
   
-  let kuota = 40;
   let limit = 40 * 60;
-  let allocation = 40 * 60;
+  let allocation = parseInt(localStorage.getItem('NDQ1MjA3NzI-allocation') ?? limit);
   let breakTimeSeconds = 3 * 60;
   let restorationRate = 0.7;
   let lastTimeTaken = parseInt(localStorage.getItem('NDQ1MjA3NzI') ?? 0);
   
+  function resetData() {
+    let isConfirm = window.confirm('Are you sure?');
+    if (!isConfirm) return;
+
+    localStorage.removeItem('NDQ1MjA3NzI')
+    localStorage.removeItem('NDQ1MjA3NzI-allocation')
+
+    allocation = limit;
+    lastTimeTaken = null;
+
+    refresh();
+  }
   
   function take() {
     let userVal = window.prompt('Minutes');
@@ -110,6 +124,8 @@
     localStorage.setItem('NDQ1MjA3NzI', lastTimeTaken);
     allocation -= takenSeconds;
     allocation = Math.max(0, allocation);
+    
+    localStorage.setItem('NDQ1MjA3NzI-allocation', allocation)
     refresh();
   }
   
@@ -117,7 +133,11 @@
   
   function refresh() {
     
-    if (!lastTimeTaken) return;
+
+    if (!lastTimeTaken) {
+      $('._txt').replaceChildren(secondsToHMS(allocation));
+      return;
+    }
     
     let now = Date.now();
     let elapsed = now - lastTimeTaken;
@@ -158,6 +178,8 @@
   
     return timeString;
   }
+
+  refresh();
   
   
 </script>
