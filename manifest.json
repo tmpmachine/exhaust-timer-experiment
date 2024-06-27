@@ -1,0 +1,14 @@
+{
+    "name": "Exhaust Timer",
+    "icons": [
+      {
+        "src": "https://1.bp.blogspot.com/-lPlOFsFZhiw/YYK3sfYZfSI/AAAAAAAAQ5I/7_x9OpHG6UsXlWtRxuyjCx2SYO6gr_l-ACLcBGAsYHQ/s192-c-rw/2021-11-03%2B23_23_36-Untitled%2B%25282%2529%2B-%2BWindows%2BPhoto%2BViewer.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      }
+    ],
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#202020",
+    "theme_color": "#202020"
+  }
