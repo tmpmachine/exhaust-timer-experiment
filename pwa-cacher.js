@@ -1,7 +1,7 @@
 let pwaCacher = (function() {
   
     let cacheName = 'helloWorldPWA-MjA3MjYxMTU';
-    let cacheIndexFile = '/manifest-cache.json';
+    let cacheIndexFile = './manifest-cache.json';
     
     let SELF = {
       ClearCache,

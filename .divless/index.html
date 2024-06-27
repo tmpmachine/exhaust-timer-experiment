@@ -185,7 +185,13 @@
 </script>
 
     <script>
-
+      if (typeof(navigator) !== 'undefined' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').then(function(swo) {
+        // success
+    }).catch(function(e) {
+        console.error('Something went wrong.')
+    });
+}
     </script>
   
 </body>
