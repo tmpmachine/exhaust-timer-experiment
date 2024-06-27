@@ -37,18 +37,18 @@
     border-radius: 10px;
   }
   button {
-    background: #dca4ff;
+    background: #ba80df;
     color: white;
     border: 0;
     padding: 0.4rem 1rem;
     border-radius: 0.2rem;
   }
   button:hover {
-    background: #b580d5;
+    background: #9e6abd;
     cursor: pointer;
   }
   button:active {
-    background: #9f70bc;
+    background: #7e5896;
   }
   .limit {
     opacity: 0.6;
@@ -57,10 +57,15 @@
 </style>
 
 [ {ta:center} .wg-Time
+
+  [btn 'Set limit' onclick="setLimit()"]
+  [ .void .void-2x]
+  
   [ 
     [s .inner
       [s ._txt .time]
-      [s '/ 40m' .limit]
+      [s '/' .limit]
+      [s '' .limit ._limit]
     ]
   ]
   [ .void .void-full]
@@ -85,26 +90,43 @@
   <script src="pwa-cacher.js"></script>
 <script>
   
-  let $ = document.querySelector.bind(document);
-  
-  let limit = 40 * 60;
-  let allocation = parseInt(localStorage.getItem('NDQ1MjA3NzI-allocation') ?? limit);
-  let breakTimeSeconds = 3 * 60;
-  let restorationRate = 0.7;
-  let lastTimeTaken = parseInt(localStorage.getItem('NDQ1MjA3NzI') ?? 0);
-  
   function resetData() {
     let isConfirm = window.confirm('Are you sure?');
     if (!isConfirm) return;
 
     localStorage.removeItem('NDQ1MjA3NzI')
     localStorage.removeItem('NDQ1MjA3NzI-allocation')
+    localStorage.removeItem('NDQ1MjA3NzI-timeLimit')
 
     allocation = limit;
     lastTimeTaken = null;
 
     refresh();
   }
+
+  let $ = document.querySelector.bind(document);
+  
+  let userLimit = parseInt(localStorage.getItem('NDQ1MjA3NzI-timeLimit') ?? 40)
+  let limit = userLimit * 60;
+  let allocation = parseInt(localStorage.getItem('NDQ1MjA3NzI-allocation') ?? limit);
+  let breakTimeSeconds = 3 * 60;
+  let restorationRate = 0.7;
+  let lastTimeTaken = parseInt(localStorage.getItem('NDQ1MjA3NzI') ?? 0);
+  
+  $('._limit').replaceChildren(`${userLimit}m`);
+
+  function setLimit() {
+    let userVal = window.prompt('Maximum minutes in single session');
+    if (userVal === null) return;
+
+    localStorage.setItem('NDQ1MjA3NzI-timeLimit', parseInt(userVal))
+    userLimit = parseInt(userVal);
+    limit = userLimit * 60;
+
+    $('._limit').replaceChildren(`${userLimit}m`);
+    refresh();
+  }
+
   
   function take() {
     let userVal = window.prompt('Minutes');
@@ -135,7 +157,7 @@
     
 
     if (!lastTimeTaken) {
-      $('._txt').replaceChildren(secondsToHMS(allocation));
+      $('._txt').replaceChildren(secondsToHMS(limit));
       return;
     }
     
