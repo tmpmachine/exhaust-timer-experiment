@@ -129,7 +129,6 @@ function setBreak() {
             energyPoint = appData.workDuration;
         
             Save();
-
         }
 
         if (runningTime < 0) {
@@ -139,7 +138,7 @@ function setBreak() {
         }
 
         if (elapsedSecondsUntilFullyRestored > 0) {
-            $('._txtRestoreTime').replaceChildren("Time until fully restored : " + secondsToHMS(elapsedSecondsUntilFullyRestored));
+            $('._txtRestoreTime').replaceChildren("Time until fully restored : " + secondsToHMS(Math.ceil(elapsedSecondsUntilFullyRestored / restoreRateInSeconds)));
         } else {
             $('._txtRestoreTime').replaceChildren();
         }
