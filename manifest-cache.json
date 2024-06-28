@@ -1,5 +1,13 @@
 {
   "etc": [
+    "js/dom-events.js",
+    "js/view-states-map.js",
+    "js/utils/view-state-util.js",
+    "script-loader.js",
+    "js/utils/awake-util.js",
+    "js/ui.js",
+    "js/app.js",
+    "js/lib/idb-keyval@6.js",
     "style.css"
   ],
   "root": [

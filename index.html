@@ -14,57 +14,91 @@
     <link rel="stylesheet" href="style.css">
 
 </head>
-<body class="skin-body h-100">
+<body class="skin-body h-100" data-view-group="mode" data-view-states="">
 
-<div class="wg-Time" style="text-align:center;">
-
-  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
-    <button onclick="setLimit()">Set work duration</button>
-    <button onclick="setBreak()">Set break duration</button>
-  </div>
-  <div class="void void-2x"></div>
-  
   <div>
-    <span class="inner">
-      <span class="_txt time"></span>
-      <span class="limit">/</span>
-      <span class="limit _limit"></span>
-    </span>
-  </div>
-  <div class="void void-full"></div>
-  <button onclick="start()">Start</button>
-  <button onclick="stop()">Stop</button>
-  <button onclick="recover()">Instant Recovery</button>
-
-  <div class="void void-2x"></div>
-  <small class="_txtRestoreTime"></small>
-  <div class="void void-2x"></div>
-
-  <!-- PWA cache manager -->
-  <div style="color:white;">
-    <small>Updates & Offline Access</small>
-  </div>
-  <div class="void void-half"></div>
-  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
-    <button onclick="pwaCacher.Cache()">Check for updates</button>
-    <button onclick="pwaCacher.ClearCache()">Remove app cache</button>
-  </div>
-  <div class="void void-2x"></div>
- 
-  <button onclick="resetData()">Reset data</button>
-</div>
     
+    <div class="wg-Time" style="text-align:center;">
+
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
+        <button onclick="setLimit()">Set work duration</button>
+        <button onclick="setBreak()">Set break duration</button>
+      </div>
+      <div class="void void-2x"></div>
+      
+      <div>
+        <span class="inner">
+          <span class="_txt time"></span>
+          <span class="limit">/</span>
+          <span class="limit _limit"></span>
+        </span>
+      </div>
+      <div class="void void-full"></div>
+      <button onclick="start()">Start</button>
+      <button onclick="stop()">Stop</button>
+      <button onclick="recover()">Instant Recovery</button>
+      <div class="void void-2x"></div>
+
+      <!-- # recovery, # restore -->
+      <div data-view-group="mode" data-view-name="recovery">
+        <small class="_txtRestoreTime"></small>
+        <button onclick="remindMe()">Remind me</button>
+      </div>
+      <div class="void void-2x"></div>
+
+      <!-- PWA cache manager -->
+      <div style="color:white;">
+        <small>Updates & Offline Access</small>
+      </div>
+      <div class="void void-half"></div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
+        <button onclick="pwaCacher.Cache()">Check for updates</button>
+        <button onclick="pwaCacher.ClearCache()">Remove app cache</button>
+      </div>
+      <div class="void void-2x"></div>
+    
+      <button onclick="resetData()">Reset data</button>
+    </div>
+    <div class="void void-2x"></div>
+        
+
+
+    <!-- # sound, # alarm -->
+    <div class="settings-group">
+      <div class="settings-group-title">Alarm Sound</div>
+      <div class="mb-m"></div>
+      <div class="settings-card-inner">
+        
+        <div class="d-flex flex-wrap gap-half">
+          <button data-onclick="pick-audio">Set audio</button>
+          <button data-onclick="remove-audio">Remove audio</button>
+          <button data-onclick="test-audio">Test audio</button>
+          <button data-onclick="stop-test-audio">Stop test</button>
+        </div>
+        <div class="void-half"></div>
+        
+        <div class="d-flex align-items-center gap-half">
+          Volume : <input data-jsq="alarm-volume" type="range" min="0.2" max="1" step="0.1" value="1" data-oninput="handle-input-alarm-volume"/>
+        </div>
+        
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container-screen-off _container-screen-off"></div>
+
   <script src="pwa-cacher.js"></script>
-  <script src="index.js"></script>
+  <script src="index.js" type="module"></script>
 
     <script>
       if (typeof(navigator) !== 'undefined' && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(function(swo) {
-        // success
-    }).catch(function(e) {
-        console.error('Something went wrong.')
-    });
-}
+        navigator.serviceWorker.register('./sw.js').then(function(swo) {
+            // success
+        }).catch(function(e) {
+            console.error('Something went wrong.')
+        });
+      }
     </script>
   
 </body>

@@ -39,3 +39,21 @@ button:active {
   opacity: 0.5;
 }
 }
+
+
+body.__screen-off .container-app { opacity: 0%; }
+body:not(.__screen-off) .container-screen-off { 
+  display: none; 
+}
+.container-screen-off {
+  background: #000000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+}
+
+/* view utils : views initial state */
+[data-view-name] { display: none; }

@@ -14,57 +14,91 @@
     <link rel="stylesheet" href="style.css">
 
 </head>
-<body class="skin-body h-100">
+<body class="skin-body h-100" data-view-group="mode" data-view-states="">
 
-[ {ta:center} .wg-Time
-
-  [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
-    [btn 'Set work duration' onclick="setLimit()"]
-    [btn 'Set break duration' onclick="setBreak()"]
-  ]
-  [ .void .void-2x]
-  
-  [ 
-    [s .inner
-      [s ._txt .time]
-      [s '/' .limit]
-      [s '' .limit ._limit]
-    ]
-  ]
-  [ .void .void-full]
-  [btn 'Start' onclick="start()"]
-  [btn 'Stop' onclick="stop()"]
-  [btn 'Instant Recovery' onclick="recover()"]
-
-  [ .void .void-2x]
-  [small ._txtRestoreTime]
-  [ .void .void-2x]
-
-  <!-- PWA cache manager -->
-  [ {col:white}
-    [small 'Updates & Offline Access']
-  ]
-  [ .void .void-half]
-  [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
-    [btn 'Check for updates' onclick="pwaCacher.Cache()"]
-    [btn 'Remove app cache' onclick="pwaCacher.ClearCache()"]
-  ]
-  [ .void .void-2x]
- 
-  [btn 'Reset data' onclick="resetData()"]
-]
+  [
     
+    [ {ta:center} .wg-Time
+
+      [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
+        [btn 'Set work duration' onclick="setLimit()"]
+        [btn 'Set break duration' onclick="setBreak()"]
+      ]
+      [ .void .void-2x]
+      
+      [ 
+        [s .inner
+          [s ._txt .time]
+          [s '/' .limit]
+          [s '' .limit ._limit]
+        ]
+      ]
+      [ .void .void-full]
+      [btn 'Start' onclick="start()"]
+      [btn 'Stop' onclick="stop()"]
+      [btn 'Instant Recovery' onclick="recover()"]
+      [ .void .void-2x]
+
+      <!-- # recovery, # restore -->
+      [ data-view-group="mode" data-view-name="recovery"
+        [small ._txtRestoreTime]
+        [btn 'Remind me' onclick="remindMe()" ]
+      ]
+      [ .void .void-2x]
+
+      <!-- PWA cache manager -->
+      [ {col:white}
+        [small 'Updates & Offline Access']
+      ]
+      [ .void .void-half]
+      [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
+        [btn 'Check for updates' onclick="pwaCacher.Cache()"]
+        [btn 'Remove app cache' onclick="pwaCacher.ClearCache()"]
+      ]
+      [ .void .void-2x]
+    
+      [btn 'Reset data' onclick="resetData()"]
+    ]
+    [ .void .void-2x]
+        
+
+
+    <!-- # sound, # alarm -->
+    [ .settings-group
+      [ 'Alarm Sound' .settings-group-title]
+      [ .mb-m]
+      [ .settings-card-inner
+        
+        [ .d-flex .flex-wrap .gap-half
+          [btn 'Set audio' data-onclick="pick-audio"]
+          [btn 'Remove audio' data-onclick="remove-audio"]
+          [btn 'Test audio' data-onclick="test-audio"]
+          [btn 'Stop test' data-onclick="stop-test-audio"]
+        ]
+        [ .void-half]
+        
+        [ .d-flex .align-items-center .gap-half
+          Volume : [in data-jsq="alarm-volume" type="range" min="0.2" max="1" step="0.1" value="1" data-oninput="handle-input-alarm-volume"]
+        ]
+        
+      ]
+    ]
+
+  ]
+
+  [ .container-screen-off ._container-screen-off]
+
   <script src="pwa-cacher.js"></script>
-  <script src="index.js"></script>
+  <script src="index.js" type="module"></script>
 
     <script>
       if (typeof(navigator) !== 'undefined' && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(function(swo) {
-        // success
-    }).catch(function(e) {
-        console.error('Something went wrong.')
-    });
-}
+        navigator.serviceWorker.register('./sw.js').then(function(swo) {
+            // success
+        }).catch(function(e) {
+            console.error('Something went wrong.')
+        });
+      }
     </script>
   
 </body>
