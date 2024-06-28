@@ -1,8 +1,12 @@
 {
-    "root": [
-      "./",
-      "index.html",
-      "manifest.json",
-      "pwa-cacher.js"
-    ]
-  }
+  "etc": [
+    "style.css"
+  ],
+  "root": [
+    "./",
+    "index.js",
+    "index.html",
+    "manifest.json",
+    "pwa-cacher.js"
+  ]
+}

@@ -11,54 +11,17 @@
 
     <!-- pwa manifest -->
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials"/>
+    <link rel="stylesheet" href="style.css">
 
 </head>
 <body class="skin-body h-100">
-  
-  <style>
-  .h-100{height:100%}
-  .void{display:flex}
-.void-tenth{padding-bottom:0.1rem}.void-quarter{padding-bottom:0.25rem}.void-half{padding-bottom:0.5rem}.void-full,.void-1x{padding-bottom:1rem}.void-2x{padding-bottom:2rem}
-  
-  .skin-body {
-    font-family: sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #252525;
-}
-
-.wg-Time {
-  .inner {
-    display: inline-block;
-    color: white;
-    background: #2376c6;
-    padding: 5px 9px;
-    border-radius: 10px;
-  }
-  button {
-    background: #ba80df;
-    color: white;
-    border: 0;
-    padding: 0.4rem 1rem;
-    border-radius: 0.2rem;
-  }
-  button:hover {
-    background: #9e6abd;
-    cursor: pointer;
-  }
-  button:active {
-    background: #7e5896;
-  }
-  .limit {
-    opacity: 0.6;
-  }
-}
-</style>
 
 [ {ta:center} .wg-Time
 
-  [btn 'Set limit' onclick="setLimit()"]
+  [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
+    [btn 'Set work duration' onclick="setLimit()"]
+    [btn 'Set break duration' onclick="setBreak()"]
+  ]
   [ .void .void-2x]
   
   [ 
@@ -69,8 +32,12 @@
     ]
   ]
   [ .void .void-full]
-  [btn 'Take' onclick="take()"]
+  [btn 'Start' onclick="start()"]
+  [btn 'Stop' onclick="stop()"]
+  [btn 'Instant Recovery' onclick="recover()"]
 
+  [ .void .void-2x]
+  [small ._txtRestoreTime]
   [ .void .void-2x]
 
   <!-- PWA cache manager -->
@@ -88,123 +55,7 @@
 ]
     
   <script src="pwa-cacher.js"></script>
-<script>
-  
-  function resetData() {
-    let isConfirm = window.confirm('Are you sure?');
-    if (!isConfirm) return;
-
-    localStorage.removeItem('NDQ1MjA3NzI')
-    localStorage.removeItem('NDQ1MjA3NzI-allocation')
-    localStorage.removeItem('NDQ1MjA3NzI-timeLimit')
-
-    allocation = limit;
-    lastTimeTaken = null;
-
-    refresh();
-  }
-
-  let $ = document.querySelector.bind(document);
-  
-  let userLimit = parseInt(localStorage.getItem('NDQ1MjA3NzI-timeLimit') ?? 40)
-  let limit = userLimit * 60;
-  let allocation = parseInt(localStorage.getItem('NDQ1MjA3NzI-allocation') ?? limit);
-  let breakTimeSeconds = 3 * 60;
-  let restorationRate = 0.7;
-  let lastTimeTaken = parseInt(localStorage.getItem('NDQ1MjA3NzI') ?? 0);
-  
-  $('._limit').replaceChildren(`${userLimit}m`);
-
-  function setLimit() {
-    let userVal = window.prompt('Maximum minutes in single session');
-    if (userVal === null) return;
-
-    localStorage.setItem('NDQ1MjA3NzI-timeLimit', parseInt(userVal))
-    userLimit = parseInt(userVal);
-    limit = userLimit * 60;
-
-    $('._limit').replaceChildren(`${userLimit}m`);
-    refresh();
-  }
-
-  
-  function take() {
-    let userVal = window.prompt('Minutes');
-    if (userVal === null) return;
-    
-    let takenSeconds = parseInt(userVal) * 60;
-    
-    if (lastTimeTaken) {
-      let now = Date.now();
-      let elapsed = now - lastTimeTaken;
-      let seconds = Math.floor(elapsed / 1000);
-      allocation += seconds * restorationRate;
-      allocation = Math.min(limit, Math.floor(allocation));
-    }
-    
-    lastTimeTaken = Date.now();
-    localStorage.setItem('NDQ1MjA3NzI', lastTimeTaken);
-    allocation -= takenSeconds;
-    allocation = Math.max(0, allocation);
-    
-    localStorage.setItem('NDQ1MjA3NzI-allocation', allocation)
-    refresh();
-  }
-  
-  window.setInterval(refresh, 5000);
-  
-  function refresh() {
-    
-
-    if (!lastTimeTaken) {
-      $('._txt').replaceChildren(secondsToHMS(limit));
-      return;
-    }
-    
-    let now = Date.now();
-    let elapsed = now - lastTimeTaken;
-    let seconds = Math.floor(elapsed / 1000);
-    let restoredTime = allocation + seconds * restorationRate;
-    restoredTime = Math.min(limit, Math.floor(restoredTime));
-    
-    $('._txt').replaceChildren(secondsToHMS(restoredTime));
-    
-    if (allocation >= limit) {
-      lastTimeTaken = null;
-    }
-  }
-  
-  $('._txt').replaceChildren(secondsToHMS(allocation));
-  
-  function secondsToHMS(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainderSeconds = seconds % 60;
-    let timeString = '';
-  
-    if (hours > 0) {
-      timeString += `${hours}h`;
-    }
-  
-    if (minutes > 0 || hours > 0) {
-      timeString += `${minutes}m`;
-    }
-  
-    if (remainderSeconds > 0 || (hours === 0 && minutes === 0)) {
-      timeString += `${remainderSeconds}s`;
-    }
-  
-    if (seconds === 0) {
-      timeString = '0s';
-    }
-  
-    return timeString;
-  }
-
-  refresh();
-  
-  
-</script>
+  <script src="index.js"></script>
 
     <script>
       if (typeof(navigator) !== 'undefined' && 'serviceWorker' in navigator) {
