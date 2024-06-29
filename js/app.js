@@ -22,7 +22,7 @@ let app = (function() {
       appData.energyPoint = energyPoint;
 
       let jsonData = JSON.stringify(appData);
-      localStorage.setItem('NDQ1MjA3NzI-appData', jsonData);
+      localStorage.setItem('NDQ1MjA3NzI-appData-v2', jsonData);
     }
 
     function Init() {
@@ -120,7 +120,7 @@ let appData = {
     startTime: null,
     endTime: null,
 };
-let savedData = localStorage.getItem('NDQ1MjA3NzI-appData');
+let savedData = localStorage.getItem('NDQ1MjA3NzI-appData-v2');
 if (savedData) {
     appData = JSON.parse(savedData);
 }
@@ -141,6 +141,7 @@ function resetData() {
     localStorage.removeItem('NDQ1MjA3NzI-allocation')
     localStorage.removeItem('NDQ1MjA3NzI-timeLimit')
     localStorage.removeItem('NDQ1MjA3NzI-appData')
+    localStorage.removeItem('NDQ1MjA3NzI-appData-v2')
 
     energyPoint = appData.workDuration;
 
