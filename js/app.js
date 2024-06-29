@@ -1,6 +1,7 @@
 let app = (function() {
   
     let SELF = {
+      Save,
       SetAlarmAudio,
       TaskRemoveAlarmAudio,
       retrieveAudioFile,
@@ -15,6 +16,13 @@ let app = (function() {
     }
     let local = {
         audioPlayer: null,
+    }
+
+    function Save() {
+      appData.energyPoint = energyPoint;
+
+      let jsonData = JSON.stringify(appData);
+      localStorage.setItem('NDQ1MjA3NzI-appData', jsonData);
     }
 
     function Init() {
@@ -104,24 +112,26 @@ let app = (function() {
 
 let $ = document.querySelector.bind(document);
 
+// # app, # data
 let appData = {
     workDuration: 25 * 60,
-    breakDuration: 3 * 60,
+    workBreakRatio: 5/25,
     energyPoint: null,
     startTime: null,
     endTime: null,
 };
-let local = {
-    isRemindMe: false,
-    refreshInterval: 1000,
-}
 let savedData = localStorage.getItem('NDQ1MjA3NzI-appData');
 if (savedData) {
     appData = JSON.parse(savedData);
 }
+let local = {
+  breakDuration: Math.ceil(appData.workDuration * appData.workBreakRatio),
+  isRemindMe: false,
+  refreshInterval: 1000,
+}
 
-let energyPoint = appData.energyPoint ?? appData.workDuration;
-let restoreRateInSeconds = Math.ceil(appData.workDuration / appData.breakDuration);
+let energyPoint = Math.min(appData.energyPoint ?? appData.workDuration, appData.workDuration);
+let restoreRateInSeconds = Math.ceil(appData.workDuration / local.breakDuration);
 
 function resetData() {
     let isConfirm = window.confirm('Are you sure?');
@@ -139,10 +149,7 @@ function resetData() {
 }
 
 function Save() {
-    appData.energyPoint = energyPoint;
-
-    let jsonData = JSON.stringify(appData);
-    localStorage.setItem('NDQ1MjA3NzI-appData', jsonData);
+    app.Save();
 }
 
 function remindMe() {
@@ -166,28 +173,7 @@ function recover() {
 }
   
 
-function setLimit() {
-    let userVal = window.prompt('Work session duration (minutes)', appData.workDuration / 60);
-    if (userVal === null) return;
 
-    appData.workDuration = parseInt(userVal) * 60;
-    restoreRateInSeconds = Math.floor(appData.workDuration / appData.breakDuration);
-    
-    Save();
-
-    $('._limit').replaceChildren(secondsToHMS(appData.workDuration));
-    refresh();
-}
-
-function setBreak() {
-    let userVal = window.prompt('Break time duration (minutes)', appData.breakDuration / 60);
-    if (userVal === null) return;
-
-    appData.breakDuration = parseInt(userVal) * 60;
-    restoreRateInSeconds = Math.floor(appData.workDuration / appData.breakDuration);
-    
-    Save();
-}
 
 
   function start() {

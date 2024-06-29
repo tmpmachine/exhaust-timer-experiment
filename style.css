@@ -1,7 +1,12 @@
-
 .h-100{height:100%}
+.d-flex{display:flex}
+.flex-column{flex-direction:column}
+
+
 .void{display:flex}
 .void-tenth{padding-bottom:0.1rem}.void-quarter{padding-bottom:0.25rem}.void-half{padding-bottom:0.5rem}.void-full,.void-1x{padding-bottom:1rem}.void-2x{padding-bottom:2rem}
+
+.gap-quarter{gap:0.25rem}.gap-half{gap:0.5rem}.gap-full{gap:1rem}
 
 .skin-body {
   font-family: sans-serif;
@@ -57,3 +62,5 @@ body:not(.__screen-off) .container-screen-off {
 
 /* view utils : views initial state */
 [data-view-name] { display: none; }
+
+.obsoletes{display:none!important;height:0!important;width:0!important;overflow:hidden!important;visibility:hidden!important;position:absolute!important}

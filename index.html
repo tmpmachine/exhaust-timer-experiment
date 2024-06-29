@@ -12,19 +12,35 @@
     <!-- pwa manifest -->
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials"/>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/skin.css">
 
 </head>
 <body class="skin-body h-100" data-view-group="mode" data-view-states="">
 
   <div>
     
-    <div class="wg-Time" style="text-align:center;">
-
-      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
-        <button onclick="setLimit()">Set work duration</button>
-        <button onclick="setBreak()">Set break duration</button>
+    <!-- # ratio slider -->
+    <div>
+      Work / rest ratio : 
+      <span class="_txtWorkRestRatio"></span>
+      <div>
+        <input class="_inWorkRestRatio" type="range" step="0.01" min="0.05" max="0.6" data-oninput="update-ratio"/>
       </div>
-      <div class="void void-2x"></div>
+      <div class="_txtInfoRatioConfig d-flex gap-quarter flex-column">
+        <div>
+          Work duration: <span class="_Work"></span>
+          <button class="skin-btn-default" data-onclick="set-limit">Edit</button>
+        </div>
+        <div>
+          Break duration: <span class="_Break"></span>
+          <button class="skin-btn-default obsoletes" data-onclick="set-break">Edit</button>
+        </div>
+      </div>
+      <button class="skin-btn-default" data-onclick="apply-ratio">Apply</button>
+    </div>
+    <div class="void void-2x"></div>
+
+    <div class="wg-Time" style="text-align:center;">
       
       <div>
         <span class="inner">
@@ -70,10 +86,10 @@
       <div class="settings-card-inner">
         
         <div class="d-flex flex-wrap gap-half">
-          <button data-onclick="pick-audio">Set audio</button>
-          <button data-onclick="remove-audio">Remove audio</button>
-          <button data-onclick="test-audio">Test audio</button>
-          <button data-onclick="stop-test-audio">Stop test</button>
+          <button class="skin-btn-default" data-onclick="pick-audio">Set audio</button>
+          <button class="skin-btn-default" data-onclick="remove-audio">Remove audio</button>
+          <button class="skin-btn-default" data-onclick="test-audio">Test audio</button>
+          <button class="skin-btn-default" data-onclick="stop-test-audio">Stop test</button>
         </div>
         <div class="void-half"></div>
         

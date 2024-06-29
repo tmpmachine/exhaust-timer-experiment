@@ -12,19 +12,35 @@
     <!-- pwa manifest -->
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials"/>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/skin.css">
 
 </head>
 <body class="skin-body h-100" data-view-group="mode" data-view-states="">
 
   [
     
-    [ {ta:center} .wg-Time
-
-      [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
-        [btn 'Set work duration' onclick="setLimit()"]
-        [btn 'Set break duration' onclick="setBreak()"]
+    <!-- # ratio slider -->
+    [
+      Work / rest ratio : 
+      [s ._txtWorkRestRatio]
+      [
+        [in type="range" step="0.01" min="0.05" max="0.6" ._inWorkRestRatio data-oninput="update-ratio"]
       ]
-      [ .void .void-2x]
+      [ ._txtInfoRatioConfig .d-flex .gap-quarter .flex-column
+        [
+          Work duration: [s ._Work]
+          [btn 'Edit' data-onclick="set-limit" .skin-btn-default]
+        ]
+        [
+          Break duration: [s ._Break]
+          [btn 'Edit' data-onclick="set-break" .skin-btn-default .obsoletes]
+        ]
+      ]
+      [btn 'Apply' data-onclick="apply-ratio" .skin-btn-default]
+    ]
+    [ .void .void-2x]
+
+    [ {ta:center} .wg-Time
       
       [ 
         [s .inner
@@ -70,10 +86,10 @@
       [ .settings-card-inner
         
         [ .d-flex .flex-wrap .gap-half
-          [btn 'Set audio' data-onclick="pick-audio"]
-          [btn 'Remove audio' data-onclick="remove-audio"]
-          [btn 'Test audio' data-onclick="test-audio"]
-          [btn 'Stop test' data-onclick="stop-test-audio"]
+          [btn 'Set audio' data-onclick="pick-audio" .skin-btn-default]
+          [btn 'Remove audio' data-onclick="remove-audio" .skin-btn-default]
+          [btn 'Test audio' data-onclick="test-audio" .skin-btn-default]
+          [btn 'Stop test' data-onclick="stop-test-audio" .skin-btn-default]
         ]
         [ .void-half]
         

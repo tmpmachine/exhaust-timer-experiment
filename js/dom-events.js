@@ -2,12 +2,16 @@ let DOMEvents = (function() {
     
     let eventsMap = { 
         onclick: {
+          'set-break': () => ui.SetBreak(),
+          'set-limit': () => ui.SetLimit(),
+          'apply-ratio': () => ui.ApplyRatio(),
             'pick-audio': () => app.SetAlarmAudio(), 
             'remove-audio': () => app.TaskRemoveAlarmAudio(), 
             'test-audio': () => app.TaskPlayAlarmAudio(), 
             'stop-test-audio': () => app.StopTestAlarmAudio(), 
         },
         oninput: {
+          'update-ratio': (evt) => ui.UpdateRatio(evt),
           'handle-input-alarm-volume': (evt) => app.HandleInputAlarmVolume(evt),
         },
         
@@ -23,6 +27,7 @@ let DOMEvents = (function() {
 
     function Init() {
         listening('[data-onclick]', 'onclick', 'click', eventsMap.onclick);
+        listening('[data-oninput]', 'oninput', 'input', eventsMap.oninput);
     }
       
     
