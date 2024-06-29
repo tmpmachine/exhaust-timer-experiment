@@ -18,13 +18,13 @@ let pwaCacher = (function() {
       return urls;
     }
       
-    function ClearCache() {
-      let isConfirm = window.confirm('Are you sure?');
+    async function ClearCache() {
+      let isConfirm = await windog.confirm('Are you sure?');
       if (!isConfirm) return;
       
       caches.delete(cacheName)
         .then(() => {
-            alert('Done! Reload to take effect.');
+            windog.alert('Done! Reload to take effect.');
         });
     };
     
@@ -49,10 +49,10 @@ let pwaCacher = (function() {
             );
           })
           .then(function() {
-            alert('Done! Reload to take effect.');
+            windog.alert('Done! Reload to take effect.');
           })
           .catch(function(error) {
-            alert('Failed. Check console.');
+            windog.alert('Failed. Check console.');
           });
         });
       

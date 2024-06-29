@@ -27,6 +27,8 @@ import { loadScripts } from './script-loader.js';
     },
     {
       urls: [
+        "js/utils/screen-state-util.js",
+        "js/lib/windog.js",
         "js/lib/idb-keyval@6.js",
       ]
     },

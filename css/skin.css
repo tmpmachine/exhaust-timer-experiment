@@ -14,3 +14,11 @@
       background: #7e5896;
     }
 }
+
+
+.skin-body {
+  font-family: sans-serif;
+  background: #252525;
+  color: #f2f2f2;
+  margin: 0;
+}

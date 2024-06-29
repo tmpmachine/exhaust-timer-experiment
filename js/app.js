@@ -133,22 +133,6 @@ let local = {
 let energyPoint = Math.min(appData.energyPoint ?? appData.workDuration, appData.workDuration);
 let restoreRateInSeconds = Math.ceil(appData.workDuration / local.breakDuration);
 
-function resetData() {
-    let isConfirm = window.confirm('Are you sure?');
-    if (!isConfirm) return;
-
-    localStorage.removeItem('NDQ1MjA3NzI')
-    localStorage.removeItem('NDQ1MjA3NzI-allocation')
-    localStorage.removeItem('NDQ1MjA3NzI-timeLimit')
-    localStorage.removeItem('NDQ1MjA3NzI-appData')
-    localStorage.removeItem('NDQ1MjA3NzI-appData-v2')
-
-    energyPoint = appData.workDuration;
-
-    refresh();
-    location.reload();
-}
-
 function Save() {
     app.Save();
 }
@@ -156,21 +140,6 @@ function Save() {
 function remindMe() {
     local.isRemindMe = true;
     ui.TurnOffScreen_();
-}
-
-function recover() {
-    let isConfirm = window.confirm('Are you sure?');
-    if (!isConfirm) return;
-
-    appData.endTime = null;
-    appData.startTime = null;
-    energyPoint = appData.workDuration;
-
-    viewStateUtil.Remove('mode', ['recovery']);
-    $('._txt').replaceChildren(secondsToHMS(appData.workDuration));
-    $('._txtRestoreTime').replaceChildren();
-
-    Save();
 }
   
 

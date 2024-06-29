@@ -3,12 +3,15 @@ let DOMEvents = (function() {
     let eventsMap = { 
         onclick: {
           'set-break': () => ui.SetBreak(),
-          'set-limit': () => ui.SetLimit(),
+          'set-limit': () => ui.EditWorkDuration_(),
           'apply-ratio': () => ui.ApplyRatio(),
-            'pick-audio': () => app.SetAlarmAudio(), 
-            'remove-audio': () => app.TaskRemoveAlarmAudio(), 
-            'test-audio': () => app.TaskPlayAlarmAudio(), 
-            'stop-test-audio': () => app.StopTestAlarmAudio(), 
+          'pick-audio': () => app.SetAlarmAudio(), 
+          'remove-audio': () => app.TaskRemoveAlarmAudio(), 
+          'reset-data': () => ui.ResetData_(), 
+          'test-audio': () => app.TaskPlayAlarmAudio(), 
+          'stop-test-audio': () => app.StopTestAlarmAudio(), 
+          'instant-recovery': () => ui.Recover_(),
+          'navigate': (evt) => ui.NavigateScreen(evt),
         },
         oninput: {
           'update-ratio': (evt) => ui.UpdateRatio(evt),

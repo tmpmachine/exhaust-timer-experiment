@@ -11,98 +11,193 @@
 
     <!-- pwa manifest -->
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials"/>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/widgets.css">
     <link rel="stylesheet" href="css/skin.css">
 
 </head>
 <body class="skin-body h-100" data-view-group="mode" data-view-states="">
 
-  [
+  <section data-view-group="screens" data-view-states="main">
     
-    <!-- # ratio slider -->
-    [
-      Work / rest ratio : 
-      [s ._txtWorkRestRatio]
+    <!-- # main screen -->
+    <section data-view-group="screens" data-view-name="main">
+    [ .container-1rem
+
+      <!-- navigation -->
+      [ .d-flex .justify-content-end
+        [
+          [btn 'Settings' .skin-btn-default data-onclick="navigate" data-target="settings"]
+          [ .void .void-1x]
+        ]
+      ]
+
+      <!-- # ratio slider -->
       [
-        [in type="range" step="0.01" min="0.05" max="0.6" ._inWorkRestRatio data-oninput="update-ratio"]
-      ]
-      [ ._txtInfoRatioConfig .d-flex .gap-quarter .flex-column
+        Work / rest ratio : 
+        [s ._txtWorkRestRatio]
         [
-          Work duration: [s ._Work]
-          [btn 'Edit' data-onclick="set-limit" .skin-btn-default]
+          [in type="range" step="0.01" min="0.05" max="0.6" ._inWorkRestRatio data-oninput="update-ratio" .w-100]
         ]
-        [
-          Break duration: [s ._Break]
-          [btn 'Edit' data-onclick="set-break" .skin-btn-default .obsoletes]
+        [ ._txtInfoRatioConfig .d-flex .gap-quarter .flex-column
+          [
+            Work duration: [s ._Work]
+            [btn 'Edit' data-onclick="set-limit" .skin-btn-default]
+          ]
+          [
+            Break duration: [s ._Break]
+            [btn 'Edit' data-onclick="set-break" .skin-btn-default .obsoletes]
+          ]
+        ]
+        [ .void .void-half]
+        [ .d-flex .justify-content-end
+          [btn 'Apply' data-onclick="apply-ratio" .skin-btn-default]
         ]
       ]
-      [btn 'Apply' data-onclick="apply-ratio" .skin-btn-default]
+      [ .void .void-2x]
+
+      [ {ta:center} .wg-Time
+        
+        [ 
+          [s .inner
+            [s ._txt .time]
+            [s '/' .limit]
+            [s '' .limit ._limit]
+          ]
+        ]
+        [ .void .void-full]
+        [btn 'Start' onclick="start()"]
+        [btn 'Stop' onclick="stop()"]
+        [btn 'Instant Recovery' data-onclick="instant-recovery"]
+        [ .void .void-2x]
+
+        <!-- # recovery, # restore -->
+        [ data-view-group="mode" data-view-name="recovery"
+          [small ._txtRestoreTime]
+          [btn 'Remind me' onclick="remindMe()" ]
+        ]
+      ]
+          
     ]
-    [ .void .void-2x]
+    </section>
 
-    [ {ta:center} .wg-Time
+    <!-- # settings screen -->
+    <section data-view-group="screens" data-view-name="settings">
+    [ .container-1rem
       
-      [ 
-        [s .inner
-          [s ._txt .time]
-          [s '/' .limit]
-          [s '' .limit ._limit]
+      <!-- navigation -->
+      [
+        [ .d-flex .gap-full .align-items-center
+          [btn 'Back' .skin-btn-default data-onclick="navigate" data-target="main"]
+          [s 'Settings']
         ]
+        [ .void .void-1x]
       ]
-      [ .void .void-full]
-      [btn 'Start' onclick="start()"]
-      [btn 'Stop' onclick="stop()"]
-      [btn 'Instant Recovery' onclick="recover()"]
-      [ .void .void-2x]
 
-      <!-- # recovery, # restore -->
-      [ data-view-group="mode" data-view-name="recovery"
-        [small ._txtRestoreTime]
-        [btn 'Remind me' onclick="remindMe()" ]
-      ]
-      [ .void .void-2x]
 
       <!-- PWA cache manager -->
-      [ {col:white}
+      [
         [small 'Updates & Offline Access']
       ]
       [ .void .void-half]
       [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
-        [btn 'Check for updates' onclick="pwaCacher.Cache()"]
-        [btn 'Remove app cache' onclick="pwaCacher.ClearCache()"]
+        [btn 'Check for updates' .skin-btn-default onclick="pwaCacher.Cache()"]
+        [btn 'Remove app cache' .skin-btn-default onclick="pwaCacher.ClearCache()"]
       ]
+      [hr]
       [ .void .void-2x]
     
-      [btn 'Reset data' onclick="resetData()"]
-    ]
-    [ .void .void-2x]
-        
-
-
-    <!-- # sound, # alarm -->
-    [ .settings-group
-      [ 'Alarm Sound' .settings-group-title]
-      [ .mb-m]
-      [ .settings-card-inner
-        
-        [ .d-flex .flex-wrap .gap-half
-          [btn 'Set audio' data-onclick="pick-audio" .skin-btn-default]
-          [btn 'Remove audio' data-onclick="remove-audio" .skin-btn-default]
-          [btn 'Test audio' data-onclick="test-audio" .skin-btn-default]
-          [btn 'Stop test' data-onclick="stop-test-audio" .skin-btn-default]
-        ]
-        [ .void-half]
-        
-        [ .d-flex .align-items-center .gap-half
-          Volume : [in data-jsq="alarm-volume" type="range" min="0.2" max="1" step="0.1" value="1" data-oninput="handle-input-alarm-volume"]
-        ]
-        
+      [
+        [small 'Application data']
       ]
-    ]
+      [ .void .void-half]
+      [btn 'Reset data' data-onclick="reset-data" .skin-btn-default]
+      [hr]
+      [ .void .void-2x]
 
-  ]
+      <!-- # sound, # alarm -->
+      [ .settings-group
+        [ 'Alarm Sound' .settings-group-title]
+        [ .void .void-half]
+        [ .settings-card-inner
+          
+          [ .d-flex .flex-wrap .gap-half
+            [btn 'Set audio' data-onclick="pick-audio" .skin-btn-default]
+            [btn 'Remove audio' data-onclick="remove-audio" .skin-btn-default]
+            [btn 'Test audio' data-onclick="test-audio" .skin-btn-default]
+            [btn 'Stop test' data-onclick="stop-test-audio" .skin-btn-default]
+          ]
+          [ .void-half]
+          
+          [ .d-flex .align-items-center .gap-half
+            Volume : [in data-jsq="alarm-volume" type="range" min="0.2" max="1" step="0.1" value="1" data-oninput="handle-input-alarm-volume"]
+          ]
+          
+        ]
+      ]
+
+    ]
+    </section>
+    
+  </section>
 
   [ .container-screen-off ._container-screen-off]
+
+  <!-- # templates -->
+  <template id="tmp-dialog-alert">
+    [dialog .wg-Windog
+    <!-- ^# tmp-dialog-alert -->
+      [ .backdrop]
+      [ .wrapper
+        
+        <form method="dialog" data-ref="form">
+          [ data-kind="message"]
+          [ .void .void-full]
+          [ .text-center
+            [btn 'Ok']
+          ]
+        </form>
+      ]
+    ]
+  </template>
+  <template id="tmp-dialog-prompt">
+    [dialog .wg-Windog
+    <!-- ^# tmp-dialog-prompt -->
+      [ .backdrop]
+      [ .wrapper
+        
+        <form method="dialog" data-ref="form">
+          [ data-kind="message"]
+          [ .void .void-half]
+          
+          [in type="text" data-kind="input" .input-style-default]
+          [ .void .void-full]
+          
+          [ .d-flex .justify-content-end .gap-full
+            [btn 'Ok' value="ok"]
+            [btn 'Cancel']
+          ]
+        </form>
+      ]
+    ]
+  </template>
+  <template id="tmp-dialog-confirm">
+    [dialog .wg-Windog
+    <!-- ^# tmp-dialog-confirm -->
+      [ .backdrop]
+      [ .wrapper
+      
+        <form method="dialog" data-ref="form">
+          [ data-kind="message"]
+          [ .void .void-full]
+          [ .d-flex .justify-content-end .gap-full
+            [btn 'OK' value="ok"]
+            [btn 'Cancel']
+          ]
+        </form>
+      ]
+    ]
+  </template>
 
   <script src="pwa-cacher.js"></script>
   <script src="index.js" type="module"></script>

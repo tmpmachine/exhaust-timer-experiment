@@ -8,12 +8,53 @@ let ui = (function() {
         Init,
         ApplyRatio,
         UpdateRatio,
-        SetLimit,
+        EditWorkDuration_,
+        Recover_,
         SetBreak,
+        ResetData_,
+        NavigateScreen,
     };
 
-    function SetLimit() {
-        let userVal = window.prompt('Work session duration (minutes)', appData.workDuration / 60);
+    function NavigateScreen(evt) {
+        let btnEl = evt.target;
+        let screenName = btnEl.dataset.target;
+        
+        screenStateUtil.NavigateTo(screenName);
+    }
+
+    async function ResetData_() {
+        let isConfirm = await windog.confirm('Are you sure?');
+        if (!isConfirm) return;
+    
+        localStorage.removeItem('NDQ1MjA3NzI')
+        localStorage.removeItem('NDQ1MjA3NzI-allocation')
+        localStorage.removeItem('NDQ1MjA3NzI-timeLimit')
+        localStorage.removeItem('NDQ1MjA3NzI-appData')
+        localStorage.removeItem('NDQ1MjA3NzI-appData-v2')
+    
+        energyPoint = appData.workDuration;
+    
+        refresh();
+        location.reload();
+    }
+
+    async function Recover_() {
+        let isConfirm = await windog.confirm('Are you sure?');
+        if (!isConfirm) return;
+    
+        appData.endTime = null;
+        appData.startTime = null;
+        energyPoint = appData.workDuration;
+    
+        viewStateUtil.Remove('mode', ['recovery']);
+        $('._txt').replaceChildren(secondsToHMS(appData.workDuration));
+        $('._txtRestoreTime').replaceChildren();
+    
+        Save();
+    }
+
+    async function EditWorkDuration_() {
+        let userVal = await windog.prompt('Work session duration (in minutes)', appData.workDuration / 60);
         if (userVal === null) return;
     
         appData.workDuration = parseInt(userVal) * 60;

@@ -11,98 +11,193 @@
 
     <!-- pwa manifest -->
     <link rel="manifest" href="manifest.json" crossorigin="use-credentials"/>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/widgets.css">
     <link rel="stylesheet" href="css/skin.css">
 
 </head>
 <body class="skin-body h-100" data-view-group="mode" data-view-states="">
 
-  <div>
+  <section data-view-group="screens" data-view-states="main">
     
-    <!-- # ratio slider -->
-    <div>
-      Work / rest ratio : 
-      <span class="_txtWorkRestRatio"></span>
+    <!-- # main screen -->
+    <section data-view-group="screens" data-view-name="main">
+    <div class="container-1rem">
+
+      <!-- navigation -->
+      <div class="d-flex justify-content-end">
+        <div>
+          <button class="skin-btn-default" data-onclick="navigate" data-target="settings">Settings</button>
+          <div class="void void-1x"></div>
+        </div>
+      </div>
+
+      <!-- # ratio slider -->
       <div>
-        <input class="_inWorkRestRatio" type="range" step="0.01" min="0.05" max="0.6" data-oninput="update-ratio"/>
-      </div>
-      <div class="_txtInfoRatioConfig d-flex gap-quarter flex-column">
+        Work / rest ratio : 
+        <span class="_txtWorkRestRatio"></span>
         <div>
-          Work duration: <span class="_Work"></span>
-          <button class="skin-btn-default" data-onclick="set-limit">Edit</button>
+          <input class="_inWorkRestRatio w-100" type="range" step="0.01" min="0.05" max="0.6" data-oninput="update-ratio"/>
         </div>
-        <div>
-          Break duration: <span class="_Break"></span>
-          <button class="skin-btn-default obsoletes" data-onclick="set-break">Edit</button>
+        <div class="_txtInfoRatioConfig d-flex gap-quarter flex-column">
+          <div>
+            Work duration: <span class="_Work"></span>
+            <button class="skin-btn-default" data-onclick="set-limit">Edit</button>
+          </div>
+          <div>
+            Break duration: <span class="_Break"></span>
+            <button class="skin-btn-default obsoletes" data-onclick="set-break">Edit</button>
+          </div>
+        </div>
+        <div class="void void-half"></div>
+        <div class="d-flex justify-content-end">
+          <button class="skin-btn-default" data-onclick="apply-ratio">Apply</button>
         </div>
       </div>
-      <button class="skin-btn-default" data-onclick="apply-ratio">Apply</button>
+      <div class="void void-2x"></div>
+
+      <div class="wg-Time" style="text-align:center;">
+        
+        <div>
+          <span class="inner">
+            <span class="_txt time"></span>
+            <span class="limit">/</span>
+            <span class="limit _limit"></span>
+          </span>
+        </div>
+        <div class="void void-full"></div>
+        <button onclick="start()">Start</button>
+        <button onclick="stop()">Stop</button>
+        <button data-onclick="instant-recovery">Instant Recovery</button>
+        <div class="void void-2x"></div>
+
+        <!-- # recovery, # restore -->
+        <div data-view-group="mode" data-view-name="recovery">
+          <small class="_txtRestoreTime"></small>
+          <button onclick="remindMe()">Remind me</button>
+        </div>
+      </div>
+          
     </div>
-    <div class="void void-2x"></div>
+    </section>
 
-    <div class="wg-Time" style="text-align:center;">
+    <!-- # settings screen -->
+    <section data-view-group="screens" data-view-name="settings">
+    <div class="container-1rem">
       
+      <!-- navigation -->
       <div>
-        <span class="inner">
-          <span class="_txt time"></span>
-          <span class="limit">/</span>
-          <span class="limit _limit"></span>
-        </span>
+        <div class="d-flex gap-full align-items-center">
+          <button class="skin-btn-default" data-onclick="navigate" data-target="main">Back</button>
+          <span>Settings</span>
+        </div>
+        <div class="void void-1x"></div>
       </div>
-      <div class="void void-full"></div>
-      <button onclick="start()">Start</button>
-      <button onclick="stop()">Stop</button>
-      <button onclick="recover()">Instant Recovery</button>
-      <div class="void void-2x"></div>
 
-      <!-- # recovery, # restore -->
-      <div data-view-group="mode" data-view-name="recovery">
-        <small class="_txtRestoreTime"></small>
-        <button onclick="remindMe()">Remind me</button>
-      </div>
-      <div class="void void-2x"></div>
 
       <!-- PWA cache manager -->
-      <div style="color:white;">
+      <div>
         <small>Updates & Offline Access</small>
       </div>
       <div class="void void-half"></div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
-        <button onclick="pwaCacher.Cache()">Check for updates</button>
-        <button onclick="pwaCacher.ClearCache()">Remove app cache</button>
+        <button class="skin-btn-default" onclick="pwaCacher.Cache()">Check for updates</button>
+        <button class="skin-btn-default" onclick="pwaCacher.ClearCache()">Remove app cache</button>
       </div>
+      <hr/>
       <div class="void void-2x"></div>
     
-      <button onclick="resetData()">Reset data</button>
-    </div>
-    <div class="void void-2x"></div>
-        
-
-
-    <!-- # sound, # alarm -->
-    <div class="settings-group">
-      <div class="settings-group-title">Alarm Sound</div>
-      <div class="mb-m"></div>
-      <div class="settings-card-inner">
-        
-        <div class="d-flex flex-wrap gap-half">
-          <button class="skin-btn-default" data-onclick="pick-audio">Set audio</button>
-          <button class="skin-btn-default" data-onclick="remove-audio">Remove audio</button>
-          <button class="skin-btn-default" data-onclick="test-audio">Test audio</button>
-          <button class="skin-btn-default" data-onclick="stop-test-audio">Stop test</button>
-        </div>
-        <div class="void-half"></div>
-        
-        <div class="d-flex align-items-center gap-half">
-          Volume : <input data-jsq="alarm-volume" type="range" min="0.2" max="1" step="0.1" value="1" data-oninput="handle-input-alarm-volume"/>
-        </div>
-        
+      <div>
+        <small>Application data</small>
       </div>
-    </div>
+      <div class="void void-half"></div>
+      <button class="skin-btn-default" data-onclick="reset-data">Reset data</button>
+      <hr/>
+      <div class="void void-2x"></div>
 
-  </div>
+      <!-- # sound, # alarm -->
+      <div class="settings-group">
+        <div class="settings-group-title">Alarm Sound</div>
+        <div class="void void-half"></div>
+        <div class="settings-card-inner">
+          
+          <div class="d-flex flex-wrap gap-half">
+            <button class="skin-btn-default" data-onclick="pick-audio">Set audio</button>
+            <button class="skin-btn-default" data-onclick="remove-audio">Remove audio</button>
+            <button class="skin-btn-default" data-onclick="test-audio">Test audio</button>
+            <button class="skin-btn-default" data-onclick="stop-test-audio">Stop test</button>
+          </div>
+          <div class="void-half"></div>
+          
+          <div class="d-flex align-items-center gap-half">
+            Volume : <input data-jsq="alarm-volume" type="range" min="0.2" max="1" step="0.1" value="1" data-oninput="handle-input-alarm-volume"/>
+          </div>
+          
+        </div>
+      </div>
+
+    </div>
+    </section>
+    
+  </section>
 
   <div class="container-screen-off _container-screen-off"></div>
+
+  <!-- # templates -->
+  <template id="tmp-dialog-alert">
+    <dialog class="wg-Windog">
+    <!-- ^# tmp-dialog-alert -->
+      <div class="backdrop"></div>
+      <div class="wrapper">
+        
+        <form method="dialog" data-ref="form">
+          <div data-kind="message"></div>
+          <div class="void void-full"></div>
+          <div class="text-center">
+            <button>Ok</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+  </template>
+  <template id="tmp-dialog-prompt">
+    <dialog class="wg-Windog">
+    <!-- ^# tmp-dialog-prompt -->
+      <div class="backdrop"></div>
+      <div class="wrapper">
+        
+        <form method="dialog" data-ref="form">
+          <div data-kind="message"></div>
+          <div class="void void-half"></div>
+          
+          <input class="input-style-default" type="text" data-kind="input"/>
+          <div class="void void-full"></div>
+          
+          <div class="d-flex justify-content-end gap-full">
+            <button value="ok">Ok</button>
+            <button>Cancel</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+  </template>
+  <template id="tmp-dialog-confirm">
+    <dialog class="wg-Windog">
+    <!-- ^# tmp-dialog-confirm -->
+      <div class="backdrop"></div>
+      <div class="wrapper">
+      
+        <form method="dialog" data-ref="form">
+          <div data-kind="message"></div>
+          <div class="void void-full"></div>
+          <div class="d-flex justify-content-end gap-full">
+            <button value="ok">OK</button>
+            <button>Cancel</button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+  </template>
 
   <script src="pwa-cacher.js"></script>
   <script src="index.js" type="module"></script>
