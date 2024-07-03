@@ -5,7 +5,10 @@
     "js/utils/view-state-util.js",
     "script-loader.js",
     "js/utils/awake-util.js",
+    "js/utils.js",
     "js/ui.js",
+    "js/utils/screen-state-util.js",
+    "js/lib/windog.js",
     "js/app.js",
     "js/lib/idb-keyval@6.js",
     "style.css"

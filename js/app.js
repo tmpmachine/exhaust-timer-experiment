@@ -1,28 +1,33 @@
 let app = (function() {
-  
-    let SELF = {
-      Save,
-      SetAlarmAudio,
-      TaskRemoveAlarmAudio,
-      retrieveAudioFile,
-      TaskPlayAlarmAudio,
-      Init,
-      StopTestAlarmAudio,
-      HandleInputAlarmVolume,
-    };
 
+  let $ = document.querySelector.bind(document);
+
+  let SELF = {
+    Save,
+    SetAlarmAudio,
+    TaskRemoveAlarmAudio,
+    retrieveAudioFile,
+    TaskPlayAlarmAudio,
+    Init,
+    StopTestAlarmAudio,
+    HandleInputAlarmVolume,
+  };
+
+    // # data
     let data = {
-        alarmVolume: 1,
+      alarmVolume: 1,
     }
+
+    // # local
     let local = {
         audioPlayer: null,
     }
 
     function Save() {
-      appData.energyPoint = energyPoint;
+      appData.energyPoint = ui.GetEnergyPoint();
 
       let jsonData = JSON.stringify(appData);
-      localStorage.setItem('NDQ1MjA3NzI-appData-v2', jsonData);
+      localStorage.setItem('NDQ1MjA3NzI-appData-v3', jsonData);
     }
 
     function Init() {
@@ -110,157 +115,19 @@ let app = (function() {
     
 })();
 
-let $ = document.querySelector.bind(document);
-
-// # app, # data
+// # appdata
 let appData = {
-    workDuration: 25 * 60,
-    workBreakRatio: 5/25,
-    energyPoint: null,
-    startTime: null,
-    endTime: null,
+  workTimeElapsed: 0,
+  breakTimeStart: null,
+  breakTimeDuration: 0,
+  workDuration: 25 * 60,
+  workBreakRatio: 5/25,
+  energyPoint: null,
+  breakTime: 0,
+  startTime: null,
+  endTime: null,
 };
-let savedData = localStorage.getItem('NDQ1MjA3NzI-appData-v2');
+let savedData = localStorage.getItem('NDQ1MjA3NzI-appData-v3');
 if (savedData) {
     appData = JSON.parse(savedData);
 }
-let local = {
-  breakDuration: Math.ceil(appData.workDuration * appData.workBreakRatio),
-  isRemindMe: false,
-  refreshInterval: 1000,
-}
-
-let energyPoint = Math.min(appData.energyPoint ?? appData.workDuration, appData.workDuration);
-let restoreRateInSeconds = Math.ceil(appData.workDuration / local.breakDuration);
-
-function Save() {
-    app.Save();
-}
-
-function remindMe() {
-    local.isRemindMe = true;
-    ui.TurnOffScreen_();
-}
-  
-
-
-
-
-  function start() {
-    $('._txtRestoreTime').replaceChildren();
-    if (appData.startTime) return;
-
-    let now = Date.now();
-
-    if (appData.endTime) {
-        energyPoint = energyPoint + Math.floor((now - appData.endTime) / 1000);
-    }
-
-    appData.endTime = null;
-    appData.startTime = now;
-
-    Save();
-
-    refresh();
-  }
-
-  function stop() {
-    if (appData.endTime) return;
-    
-    viewStateUtil.Add('mode', ['recovery']);
-
-    let now = Date.now();
-
-    if (appData.startTime) {
-        energyPoint = energyPoint - Math.ceil((now - appData.startTime) / 1000);
-    }
-    
-    appData.startTime = null;
-    appData.endTime = now;
-
-    Save();
-    
-    refresh();
-  }
-  
-  function refresh() {
-    
-    if (appData.endTime) {
-        let now = Date.now();
-        let secondsElapsed = Math.floor((now - appData.endTime) / 1000);
-        let restoredMs = secondsElapsed * restoreRateInSeconds * 1000;
-        let runningTime = energyPoint * 1000 + restoredMs;
-        let elapsedSecondsUntilFullyRestored = appData.workDuration - Math.floor(runningTime / 1000);
-        runningTime = Math.min(appData.workDuration * 1000, runningTime);
-
-        viewStateUtil.Add('mode', ['recovery']);
-
-        if (runningTime >= appData.workDuration * 1000) {
-            appData.endTime = null;
-            energyPoint = appData.workDuration;
-            viewStateUtil.Remove('mode', ['recovery']);
-            app.TaskPlayAlarmAudio();
-
-            if (local.isRemindMe) {
-                local.isRemindMe = false;
-                ui.TurnOnScreen();
-            }
-
-            Save();
-        }
-
-        if (runningTime < 0) {
-            $('._txt').replaceChildren("-" + secondsToHMS(Math.ceil(-runningTime / 1000)));
-        } else {
-            $('._txt').replaceChildren(secondsToHMS(Math.floor(runningTime / 1000)));
-        }
-
-        if (elapsedSecondsUntilFullyRestored > 0) {
-            $('._txtRestoreTime').replaceChildren("Time until fully restored : " + secondsToHMS(Math.ceil(elapsedSecondsUntilFullyRestored / restoreRateInSeconds)));
-        } else {
-            $('._txtRestoreTime').replaceChildren();
-        }
-
-    } else if (appData.startTime) {
-        let now = Date.now();
-        let runningTime = energyPoint * 1000 - (now - appData.startTime);
-
-        if (runningTime < 0) {
-            $('._txt').replaceChildren("-" + secondsToHMS(Math.ceil(-runningTime / 1000)));
-        } else {
-            $('._txt').replaceChildren(secondsToHMS(Math.floor(runningTime / 1000)));
-        }
-    }
-
-  }
-
-  
-  function secondsToHMS(seconds) {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainderSeconds = seconds % 60;
-    let timeString = '';
-  
-    if (hours > 0) {
-      timeString += `${hours}h`;
-    }
-  
-    if (minutes > 0 || hours > 0) {
-      timeString += `${minutes}m`;
-    }
-  
-    if (remainderSeconds > 0 || (hours === 0 && minutes === 0)) {
-      timeString += `${remainderSeconds}s`;
-    }
-  
-    if (seconds === 0) {
-      timeString = '0s';
-    }
-  
-    return timeString;
-  }
-
-window.setInterval(refresh, local.refreshInterval);
-$('._limit').replaceChildren(secondsToHMS(appData.workDuration));
-$('._txt').replaceChildren(secondsToHMS(energyPoint));
-refresh();

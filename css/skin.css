@@ -1,24 +1,41 @@
 .skin-btn-default {
-    &{
-        background: #ba80df;
-        color: white;
-        border: 0;
-        padding: 0.4rem 1rem;
-        border-radius: 0.2rem;
-    }
-    &:hover {
-      background: #9e6abd;
-      cursor: pointer;
-    }
-    &:active {
-      background: #7e5896;
-    }
+  &{
+      background: #ba80df;
+      color: white;
+      border: 0;
+      padding: 0.4rem 1rem;
+      border-radius: 0.2rem;
+  }
+  &:hover {
+    background: #9e6abd;
+    cursor: pointer;
+  }
+  &:active {
+    background: #7e5896;
+  }
+}
+
+.skin-btn-danger {
+&{
+    background: #df8080;
+    color: white;
+    border: 0;
+    padding: 0.4rem 1rem;
+    border-radius: 0.2rem;
+}
+&:hover {
+  background: #bd6a6a;
+  cursor: pointer;
+}
+&:active {
+  background: #965858;
+}
 }
 
 
 .skin-body {
-  font-family: sans-serif;
-  background: #252525;
-  color: #f2f2f2;
-  margin: 0;
+font-family: sans-serif;
+background: #252525;
+color: #f2f2f2;
+margin: 0;
 }

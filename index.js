@@ -5,9 +5,9 @@ import { loadScripts } from './script-loader.js';
   loadScripts([
     {
       urls: [
-        'js/dom-events.js',
-        'js/view-states-map.js',
-        'js/utils/view-state-util.js',
+        "js/dom-events.js",
+        "js/view-states-map.js",
+        "js/utils/view-state-util.js",
       ],
       callback: function() {
         DOMEvents.Init();
@@ -16,9 +16,10 @@ import { loadScripts } from './script-loader.js';
     },
     {
       urls: [
-        'js/utils/awake-util.js',
-        'js/ui.js',
-        'js/app.js',
+        "js/utils/awake-util.js",
+        "js/utils.js",
+        "js/ui.js",
+        "js/app.js",
       ],
       callback: function() {
         app.Init();

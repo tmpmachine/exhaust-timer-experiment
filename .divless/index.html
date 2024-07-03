@@ -55,6 +55,17 @@
         ]
       ]
       [ .void .void-2x]
+      [hr]
+      [ .void .void-2x]
+
+      <!-- # instant recovery -->
+      [ .d-flex .gap-half .justify-content-end
+        [
+          [btn 'Instant Recovery' data-onclick="instant-recovery" .skin-btn-default]
+        ]
+        [btn 'Fake screen off' onclick="ui.RemindMe()" .skin-btn-default]
+      ]
+      [ .void .void-2x]
 
       [ {ta:center} .wg-Time
         
@@ -66,16 +77,55 @@
           ]
         ]
         [ .void .void-full]
-        [btn 'Start' onclick="start()"]
-        [btn 'Stop' onclick="stop()"]
-        [btn 'Instant Recovery' data-onclick="instant-recovery"]
-        [ .void .void-2x]
 
-        <!-- # recovery, # restore -->
-        [ data-view-group="mode" data-view-name="recovery"
-          [small ._txtRestoreTime]
-          [btn 'Remind me' onclick="remindMe()" ]
+        [ data-view-group="timerState" data-view-states="idle"
+      
+          <!-- # timer info -->
+          [
+            [s '---' ._txtTimer]
+          ]
+          [ .void .void-full]
+
+          <!-- # timer actions -->
+          [ data-view-group="timerState" data-view-name="idle started"
+            [ .d-flex .gap-half .flex-wrap .justify-content-center  .align-items-center
+              [ data-view-group="timerState" data-view-name="idle"
+                [btn 'Start' onclick="ui.Start()"  .skin-btn-default]
+              ]
+              [ data-view-group="timerState" data-view-name="started"
+                [btn 'Pause' onclick="ui.Stop()" .skin-btn-danger]
+              ]
+              |
+              [ data-view-group="timerState" data-view-name="idle started"
+                [ .d-flex .gap-half .justify-content-center
+                  [btn 'Take a rest' onclick="ui.TakeRest()" .skin-btn-danger]
+                  [btn 'Custom' onclick="app.CustomRest()" .skin-btn-danger .obsoletes]
+                ]   
+              ]
+            ]
+          ]
+          [ data-view-group="timerState" data-view-name="recovery"
+            [btn 'Stop' onclick="ui.StopRest()" .skin-btn-danger]
+          ]
+          [ .void .void-2x]
+
+          <!-- # rest time -->
+          [ .d-flex .flex-column .gap-half .align-items-ccenter
+            [ 
+              Rest time: [s ._txtEstRestTime]
+            ]
+          ]
+          [ .void .void-1x]
+
+          <!-- # recovery, # restore -->
+          [ data-view-group="timerState" data-view-name="recovery"
+            [
+              [small ._txtRestoreTime]
+            ]
+          ]
+
         ]
+
       ]
           
     ]

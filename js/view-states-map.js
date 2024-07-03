@@ -6,6 +6,12 @@ let viewStatesMap = [
     ],
   },
   {
+    group: 'timerState',
+    states: [
+      'started', 'idle', 'recovery'
+    ]
+  },
+  {
     group: 'screens',
     states: [ 
       'main', 'settings',

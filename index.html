@@ -55,6 +55,17 @@
         </div>
       </div>
       <div class="void void-2x"></div>
+      <hr/>
+      <div class="void void-2x"></div>
+
+      <!-- # instant recovery -->
+      <div class="d-flex gap-half justify-content-end">
+        <div>
+          <button class="skin-btn-default" data-onclick="instant-recovery">Instant Recovery</button>
+        </div>
+        <button class="skin-btn-default" onclick="ui.RemindMe()">Fake screen off</button>
+      </div>
+      <div class="void void-2x"></div>
 
       <div class="wg-Time" style="text-align:center;">
         
@@ -66,16 +77,55 @@
           </span>
         </div>
         <div class="void void-full"></div>
-        <button onclick="start()">Start</button>
-        <button onclick="stop()">Stop</button>
-        <button data-onclick="instant-recovery">Instant Recovery</button>
-        <div class="void void-2x"></div>
 
-        <!-- # recovery, # restore -->
-        <div data-view-group="mode" data-view-name="recovery">
-          <small class="_txtRestoreTime"></small>
-          <button onclick="remindMe()">Remind me</button>
+        <div data-view-group="timerState" data-view-states="idle">
+      
+          <!-- # timer info -->
+          <div>
+            <span class="_txtTimer">---</span>
+          </div>
+          <div class="void void-full"></div>
+
+          <!-- # timer actions -->
+          <div data-view-group="timerState" data-view-name="idle started">
+            <div class="d-flex gap-half flex-wrap justify-content-center align-items-center">
+              <div data-view-group="timerState" data-view-name="idle">
+                <button class="skin-btn-default" onclick="ui.Start()">Start</button>
+              </div>
+              <div data-view-group="timerState" data-view-name="started">
+                <button class="skin-btn-danger" onclick="ui.Stop()">Pause</button>
+              </div>
+              |
+              <div data-view-group="timerState" data-view-name="idle started">
+                <div class="d-flex gap-half justify-content-center">
+                  <button class="skin-btn-danger" onclick="ui.TakeRest()">Take a rest</button>
+                  <button class="skin-btn-danger obsoletes" onclick="app.CustomRest()">Custom</button>
+                </div>   
+              </div>
+            </div>
+          </div>
+          <div data-view-group="timerState" data-view-name="recovery">
+            <button class="skin-btn-danger" onclick="ui.StopRest()">Stop</button>
+          </div>
+          <div class="void void-2x"></div>
+
+          <!-- # rest time -->
+          <div class="d-flex flex-column gap-half align-items-ccenter">
+            <div>
+              Rest time: <span class="_txtEstRestTime"></span>
+            </div>
+          </div>
+          <div class="void void-1x"></div>
+
+          <!-- # recovery, # restore -->
+          <div data-view-group="timerState" data-view-name="recovery">
+            <div>
+              <small class="_txtRestoreTime"></small>
+            </div>
+          </div>
+
         </div>
+
       </div>
           
     </div>

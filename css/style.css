@@ -3,7 +3,7 @@
 .flex-column{flex-direction:column}
 .flex-wrap{flex-wrap:wrap}
 .align-items-center{align-items:center}
-.justify-content-end{justify-content:flex-end}
+.justify-content-end{justify-content:flex-end}.justify-content-center{justify-content:center}
 
 .container-1rem{padding:1rem}
 
@@ -19,20 +19,6 @@
   background: #2376c6;
   padding: 5px 9px;
   border-radius: 10px;
-}
-button {
-  background: #ba80df;
-  color: white;
-  border: 0;
-  padding: 0.4rem 1rem;
-  border-radius: 0.2rem;
-}
-button:hover {
-  background: #9e6abd;
-  cursor: pointer;
-}
-button:active {
-  background: #7e5896;
 }
 .limit {
   opacity: 0.5;
