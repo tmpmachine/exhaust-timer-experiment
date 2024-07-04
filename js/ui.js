@@ -112,7 +112,16 @@ let ui = (function() {
     }
 
     function hasRestTime() {
-        let breakTime = appData.breakTime ?? 0;
+
+        let addedRestTime = 0;
+        if (appData.startTime) {
+            let now = Date.now();
+            let elapsedTime = now - appData.startTime;
+            let addedRestTimeInSeconds = Math.floor( (elapsedTime + local.leftOverElapsedTime) / (restoreRateInSeconds * 1000) );        
+            addedRestTime = addedRestTimeInSeconds * 1000;
+        }
+
+        let breakTime = (appData.breakTime ?? 0) + addedRestTime;
         let breakTimeInSeconds = Math.floor( breakTime / 1000);
         return (breakTimeInSeconds > 0);
     }
@@ -133,7 +142,6 @@ let ui = (function() {
           
         app.Save();
         
-        viewStateUtil.Set('timerState', ['recovery']);
         $('._txtTimer').replaceChildren( utils.SecondsToHMS(Math.floor(appData.breakTimeDuration / 1000)) );
         RefreshRestTime();
         StartBreakTime();
@@ -288,8 +296,9 @@ let ui = (function() {
     function StartBreakTime() {
         stopBreakTimeInterval();
         viewStateUtil.Add('mode', ['recovery']);
-
+        viewStateUtil.Set('timerState', ['recovery']);
         RefreshBreakTime();
+        
         local.breakTimeInterval = window.setInterval(RefreshBreakTime, local.refreshInterval);
     }
 
@@ -396,6 +405,10 @@ let ui = (function() {
         refreshWorkTime();
         if (appData.startTime) {
             startWorkTimer();
+        }
+
+        if (appData.breakTimeStart) {
+            StartBreakTime();
         }
 
         refreshTimerState();
