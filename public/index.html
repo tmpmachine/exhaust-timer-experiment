@@ -32,6 +32,11 @@
         </div>
       </div>
 
+      <div class="d-flex justify-content-end">
+        <small>v1.0</small>
+      </div>
+      <div class="void void-1x"></div>
+
       <!-- # ratio slider -->
       <div>
         Work / rest ratio : 
@@ -99,7 +104,7 @@
               <div data-view-group="timerState" data-view-name="idle started">
                 <div class="d-flex gap-half justify-content-center">
                   <button class="skin-btn-danger" onclick="ui.TakeRest()">Take a rest</button>
-                  <button class="skin-btn-danger obsoletes" onclick="app.CustomRest()">Custom</button>
+                  <button class="skin-btn-danger" onclick="ui.TakeCustomRest()">Custom</button>
                 </div>   
               </div>
             </div>
@@ -123,6 +128,8 @@
               <small class="_txtRestoreTime"></small>
             </div>
           </div>
+
+          <div class="_listRestTimeSuggestion wg-RestTimeSuggest"></div>
 
         </div>
 

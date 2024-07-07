@@ -32,6 +32,11 @@
         ]
       ]
 
+      [ .d-flex .justify-content-end
+        [small 'v1.0']
+      ]
+      [ .void .void-1x]
+
       <!-- # ratio slider -->
       [
         Work / rest ratio : 
@@ -99,7 +104,7 @@
               [ data-view-group="timerState" data-view-name="idle started"
                 [ .d-flex .gap-half .justify-content-center
                   [btn 'Take a rest' onclick="ui.TakeRest()" .skin-btn-danger]
-                  [btn 'Custom' onclick="app.CustomRest()" .skin-btn-danger .obsoletes]
+                  [btn 'Custom' onclick="ui.TakeCustomRest()" .skin-btn-danger]
                 ]   
               ]
             ]
@@ -123,6 +128,8 @@
               [small ._txtRestoreTime]
             ]
           ]
+
+          [ ._listRestTimeSuggestion .wg-RestTimeSuggest]
 
         ]
 

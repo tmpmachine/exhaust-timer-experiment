@@ -22,6 +22,7 @@ let ui = (function() {
         SetBreakDuration,
         GetEnergyPoint,
         RemindMe,
+        TakeCustomRest, 
     };
 
     // # local
@@ -112,7 +113,12 @@ let ui = (function() {
     }
 
     function hasRestTime() {
+        let breakTime = getLiveRestTime();
+        let breakTimeInSeconds = Math.floor( breakTime / 1000);
+        return (breakTimeInSeconds > 0);
+    }
 
+    function getLiveRestTime() {
         let addedRestTime = 0;
         if (appData.startTime) {
             let now = Date.now();
@@ -122,23 +128,41 @@ let ui = (function() {
         }
 
         let breakTime = (appData.breakTime ?? 0) + addedRestTime;
-        let breakTimeInSeconds = Math.floor( breakTime / 1000);
-        return (breakTimeInSeconds > 0);
+        return breakTime;
+    }
+
+    // # custom rest
+    async function TakeCustomRest() {
+        if (!hasRestTime()) return;
+
+        let liveBreakTime = getLiveRestTime();
+        let currentRestTimeStr= utils.SecondsToHMS(Math.floor(liveBreakTime / 1000))
+        let userVal = await windog.prompt('Custom rest time (HMS format), e.g.: 3m, 1m30s', currentRestTimeStr);
+        if (userVal === null) return;
+
+        let duration = utils.ParseHmsToMs(userVal);
+        if (!duration) return;
+
+        startBreakTimeFromMsDuration(duration);
     }
 
     // # take rest, # break time, # resting
     function TakeRest() {
-
         if (!hasRestTime()) return;
 
+        startBreakTimeFromMsDuration(appData.breakTime);
+    }
+
+    function startBreakTimeFromMsDuration(duration) {
+        
         if (appData.startTime) {
             Stop();
         }
-
+        
         let now = Date.now();
 
         appData.breakTimeStart = now;
-        appData.breakTimeDuration = appData.breakTime;
+        appData.breakTimeDuration = duration;
           
         app.Save();
         
@@ -298,6 +322,8 @@ let ui = (function() {
         viewStateUtil.Add('mode', ['recovery']);
         viewStateUtil.Set('timerState', ['recovery']);
         RefreshBreakTime();
+        window.Android?.cancelScheduledNotification?.();
+        window.Android?.scheduleNotificationInSeconds?.(Math.floor(appData.breakTimeDuration / 1000));
         
         local.breakTimeInterval = window.setInterval(RefreshBreakTime, local.refreshInterval);
     }
@@ -309,6 +335,7 @@ let ui = (function() {
         let elapsedTime = now - breakTimeStart;
         let restoredMs = elapsedTime * restoreRateInSeconds;
         let runningTime = (appData.workDuration * 1000 - appData.workTimeElapsed) + restoredMs;
+        console.log(runningTime)
 
         appData.breakTimeStart = null;
         appData.breakTimeDuration = 0;
@@ -326,6 +353,9 @@ let ui = (function() {
         stopBreakTimeInterval();
         viewStateUtil.Set('timerState', ['idle']);
         ui.RefreshRestTime();
+        if (!opt?.isBySystem) {
+            window.Android?.cancelScheduledNotification?.();
+        }
 
         if (runningTime < 0) {
             let restoredWorkTime = Math.ceil(-runningTime / 1000);
@@ -353,6 +383,7 @@ let ui = (function() {
 
         if (timeLeft <= 0) {
             StopRest({
+                isBySystem: true,
                 isPlayAudio: local.isRemindMe,
             });
             return;
@@ -400,7 +431,7 @@ let ui = (function() {
         });
 
         $('._limit').replaceChildren(utils.SecondsToHMS(appData.workDuration));
-        $('._txt').replaceChildren(utils.SecondsToHMS(energyPoint));
+        // $('._txt').replaceChildren(utils.SecondsToHMS(energyPoint));
 
         refreshWorkTime();
         if (appData.startTime) {
