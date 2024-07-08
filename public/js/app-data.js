@@ -25,7 +25,7 @@ let appData = (function() {
     }
   
     function GetComponentData(componentKey) {
-      if (!data.components[componentKey]) return null;
+      if (!data.components?.[componentKey]) return null;
   
       return clearReference(data.components[componentKey]);
     }
