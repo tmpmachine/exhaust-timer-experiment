@@ -12,6 +12,7 @@ let DOMEvents = (function() {
           'stop-test-audio': () => app.StopTestAlarmAudio(), 
           'instant-recovery': () => ui.Recover_(),
           'navigate': (evt) => ui.NavigateScreen(evt),
+          'handle-click-recent-rest': (evt) => uiCustomBreak.HandleClickList(evt),
         },
         oninput: {
           'update-ratio': (evt) => ui.UpdateRatio(evt),

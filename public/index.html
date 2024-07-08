@@ -32,8 +32,9 @@
         </div>
       </div>
 
+      <!-- # version -->
       <div class="d-flex justify-content-end">
-        <small>v1.0</small>
+        <small>v1.2x</small>
       </div>
       <div class="void void-1x"></div>
 
@@ -121,6 +122,15 @@
             </div>
           </div>
           <div class="void void-1x"></div>
+
+          <!-- # suggestion -->
+          <div class="text-align-start">
+            <div>
+              <small>Recent custom rest time :</small>
+            </div>
+            <div class="void void-half"></div>
+            <div class="_listBreakSuggestion wg-BreakSuggestion" data-onclick="handle-click-recent-rest"></div>
+          </div>
 
           <!-- # recovery, # restore -->
           <div data-view-group="timerState" data-view-name="recovery">
@@ -254,6 +264,15 @@
         </form>
       </div>
     </dialog>
+  </template>
+  <template id="tmp-list-break-suggestion">
+    <div class="item" data-kind="item" data-id="" data-duration="">
+      <!-- # tmp suggestion -->
+      <span class="_labelValue label">00:00</span>
+      <div class="action" data-action="delete">
+        <button>x</button>
+      </div>
+    </div>
   </template>
 
   <script src="pwa-cacher.js"></script>

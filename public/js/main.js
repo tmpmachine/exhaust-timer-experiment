@@ -1,9 +1,9 @@
-let app = (function() {
+let compoMain = (function() {
 
   let $ = document.querySelector.bind(document);
 
   let SELF = {
-    Save,
+    // Save,
     SetAlarmAudio,
     TaskRemoveAlarmAudio,
     retrieveAudioFile,
@@ -11,32 +11,75 @@ let app = (function() {
     Init,
     StopTestAlarmAudio,
     HandleInputAlarmVolume,
+    Commit,
   };
+
+  Object.defineProperty(SELF, 'data', {
+    get: () => data,
+  });
 
     // # data
     let data = {
       alarmVolume: 1,
+      workTimeElapsed: 0,
+      breakTimeStart: 0,
+      breakTimeDuration: 0,
+      workDuration: 25 * 60,
+      workBreakRatio: 5/25,
+      breakTime: 0,
+      startTime: 0,
+      endTime: 0,
     }
 
     // # local
     let local = {
-        audioPlayer: null,
+      componentStorageKey: 'compoMain',
+      audioPlayer: null,
     }
 
-    function Save() {
-      appData.energyPoint = ui.GetEnergyPoint();
-
-      let jsonData = JSON.stringify(appData);
-      localStorage.setItem('NDQ1MjA3NzI-appData-v3', jsonData);
+    function Commit() {
+      appData.SetComponentData(local.componentStorageKey, data);
+    }
+    
+    function getStoreKey() {
+      return local.componentStorageKey;
+    }
+    
+    function restoreData(noRefData) {
+      for (let key in data) {
+        if (typeof(noRefData[key]) != 'undefined' && typeof(noRefData[key]) == typeof(data[key])) {
+          data[key] = noRefData[key];
+        }
+      } 
+    }
+  
+    // # restore
+    function restoreAppData() {
+      // main
+      {
+        let data = appData.GetComponentData(getStoreKey());
+        restoreData(data);
+      }
+      // custom break
+      {
+        new Promise(async () => {
+          await wait.Until(() => (typeof(compoCustomBreak) != 'undefined'), null, 100);
+          let data = appData.GetComponentData(compoCustomBreak.GetStoreKey());
+          compoCustomBreak.RestoreData(data);
+        })
+      }
     }
 
     function Init() {
-        
         // alarm volume 
         let alarmVolumePreferences = localStorage.getItem('alarm-audio-volume');
         if (alarmVolumePreferences !== null) {
             data.alarmVolume = parseFloat(alarmVolumePreferences);
         } 
+        
+        restoreAppData();
+
+        ui.Init();
     }
 
     
@@ -114,20 +157,3 @@ let app = (function() {
     return SELF;
     
 })();
-
-// # appdata
-let appData = {
-  workTimeElapsed: 0,
-  breakTimeStart: null,
-  breakTimeDuration: 0,
-  workDuration: 25 * 60,
-  workBreakRatio: 5/25,
-  energyPoint: null,
-  breakTime: 0,
-  startTime: null,
-  endTime: null,
-};
-let savedData = localStorage.getItem('NDQ1MjA3NzI-appData-v3');
-if (savedData) {
-    appData = JSON.parse(savedData);
-}

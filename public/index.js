@@ -8,6 +8,9 @@ import { loadScripts } from './script-loader.js';
         "js/dom-events.js",
         "js/view-states-map.js",
         "js/utils/view-state-util.js",
+        "js/utils/wait.js",
+        "js/utils/list-container-builder.js",
+        "js/utils/data-server-util.js",
       ],
       callback: function() {
         DOMEvents.Init();
@@ -16,14 +19,15 @@ import { loadScripts } from './script-loader.js';
     },
     {
       urls: [
+        "js/app-data.js",
         "js/utils/awake-util.js",
         "js/utils.js",
         "js/ui.js",
-        "js/app.js",
+        "js/main.js",
       ],
       callback: function() {
-        app.Init();
-        ui.Init();
+        appData.Init();
+        compoMain.Init();
       }
     },
     {
@@ -31,7 +35,9 @@ import { loadScripts } from './script-loader.js';
         "js/utils/screen-state-util.js",
         "js/lib/windog.js",
         "js/lib/idb-keyval@6.js",
-      ]
+        "js/components/custom-break-component.js",
+        "js/uis/custom-break-ui.js",
+      ],
     },
   ]);
   

@@ -20,9 +20,10 @@ let ui = (function() {
         RefreshRestTime,
         StartBreakTime,
         SetBreakDuration,
-        GetEnergyPoint,
         RemindMe,
+        GetLiveRestTime: getLiveRestTime,
         TakeCustomRest, 
+        StartBreakTimeFromMsDuration: startBreakTimeFromMsDuration,
     };
 
     // # local
@@ -35,24 +36,20 @@ let ui = (function() {
         leftOverElapsedTime: 0,
     };
 
-    let energyPoint = 0;
     let restoreRateInSeconds = 0;
-
-    function GetEnergyPoint() {
-        return energyPoint;
-    }
 
     // # start timer
     function Start() {
         $('._txtRestoreTime').replaceChildren();
-        if (appData.startTime) return;
+        if (compoMain.data.startTime) return;
 
         let now = Date.now();
 
-        appData.endTime = null;
-        appData.startTime = now;
+        compoMain.data.endTime = null;
+        compoMain.data.startTime = now;
 
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
 
         viewStateUtil.Set('timerState', ['started']);
         refreshWorkTime();
@@ -66,8 +63,8 @@ let ui = (function() {
 
     function refreshWorkTime() {
         let now = Date.now();
-        let existingTimerTime = appData.startTime ? (now - appData.startTime) : 0
-        let runningTime = (appData.workDuration * 1000 - appData.workTimeElapsed) - existingTimerTime;
+        let existingTimerTime = compoMain.data.startTime ? (now - compoMain.data.startTime) : 0
+        let runningTime = (compoMain.data.workDuration * 1000 - compoMain.data.workTimeElapsed) - existingTimerTime;
         
         if (runningTime < 0) {
             let secondsElapsed = Math.ceil(-runningTime / 1000);
@@ -78,8 +75,8 @@ let ui = (function() {
         }
 
         let addedRestTime = 0;
-        if (appData.startTime) {
-            let elapsedTime = now - appData.startTime;
+        if (compoMain.data.startTime) {
+            let elapsedTime = now - compoMain.data.startTime;
             let addedRestTimeInSeconds = Math.floor( (elapsedTime + local.leftOverElapsedTime) / (restoreRateInSeconds * 1000) );        
             addedRestTime = addedRestTimeInSeconds * 1000;
         }
@@ -95,17 +92,18 @@ let ui = (function() {
         stopWorkInterval();
         
         let now = Date.now();
-        let elapsedTime = now - appData.startTime;
+        let elapsedTime = now - compoMain.data.startTime;
         let addedRestTimeInSeconds = Math.floor( (elapsedTime + local.leftOverElapsedTime) / (restoreRateInSeconds * 1000) );
         local.leftOverElapsedTime = (elapsedTime + local.leftOverElapsedTime) % (restoreRateInSeconds * 1000);
 
-        appData.workTimeElapsed += elapsedTime;
+        compoMain.data.workTimeElapsed += elapsedTime;
         
-        appData.breakTime = (appData.breakTime ?? 0) + addedRestTimeInSeconds * 1000;
-        appData.startTime = null;
-        appData.endTime = null;
-            
-        app.Save();
+        compoMain.data.breakTime = (compoMain.data.breakTime ?? 0) + addedRestTimeInSeconds * 1000;
+        compoMain.data.startTime = null;
+        compoMain.data.endTime = null;
+           
+        compoMain.Commit();
+        appData.Save();
         
         viewStateUtil.Set('timerState', ['idle']);
         viewStateUtil.Add('mode', ['recovery']);
@@ -120,14 +118,14 @@ let ui = (function() {
 
     function getLiveRestTime() {
         let addedRestTime = 0;
-        if (appData.startTime) {
+        if (compoMain.data.startTime) {
             let now = Date.now();
-            let elapsedTime = now - appData.startTime;
+            let elapsedTime = now - compoMain.data.startTime;
             let addedRestTimeInSeconds = Math.floor( (elapsedTime + local.leftOverElapsedTime) / (restoreRateInSeconds * 1000) );        
             addedRestTime = addedRestTimeInSeconds * 1000;
         }
 
-        let breakTime = (appData.breakTime ?? 0) + addedRestTime;
+        let breakTime = (compoMain.data.breakTime ?? 0) + addedRestTime;
         return breakTime;
     }
 
@@ -136,13 +134,19 @@ let ui = (function() {
         if (!hasRestTime()) return;
 
         let liveBreakTime = getLiveRestTime();
-        let currentRestTimeStr= utils.SecondsToHMS(Math.floor(liveBreakTime / 1000))
+        let currentRestTimeStr = utils.SecondsToHMS(Math.floor(liveBreakTime / 1000))
         let userVal = await windog.prompt('Custom rest time (HMS format), e.g.: 3m, 1m30s', currentRestTimeStr);
         if (userVal === null) return;
 
         let duration = utils.ParseHmsToMs(userVal);
         if (!duration) return;
+        
+        compoCustomBreak.Add(duration, userVal);
 
+        compoCustomBreak.Commit();
+        appData.Save();
+
+        uiCustomBreak.Refresh();
         startBreakTimeFromMsDuration(duration);
     }
 
@@ -150,33 +154,36 @@ let ui = (function() {
     function TakeRest() {
         if (!hasRestTime()) return;
 
-        startBreakTimeFromMsDuration(appData.breakTime);
+        let liveBreakTime = getLiveRestTime();
+        startBreakTimeFromMsDuration(liveBreakTime);
     }
 
     function startBreakTimeFromMsDuration(duration) {
-        
-        if (appData.startTime) {
+        if (compoMain.data.breakTimeStart) return;
+
+        if (compoMain.data.startTime) {
             Stop();
         }
         
         let now = Date.now();
 
-        appData.breakTimeStart = now;
-        appData.breakTimeDuration = duration;
+        compoMain.data.breakTimeStart = now;
+        compoMain.data.breakTimeDuration = duration;
           
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
         
-        $('._txtTimer').replaceChildren( utils.SecondsToHMS(Math.floor(appData.breakTimeDuration / 1000)) );
+        $('._txtTimer').replaceChildren( utils.SecondsToHMS(Math.floor(compoMain.data.breakTimeDuration / 1000)) );
         RefreshRestTime();
         StartBreakTime();
     }
 
     function SetBreakDuration(amount) {
-        local.breakDuration = Math.ceil(appData.workDuration * appData.workBreakRatio);
+        local.breakDuration = Math.ceil(compoMain.data.workDuration * compoMain.data.workBreakRatio);
     }
 
     function RefreshRestTime(addedRestTime = 0) {
-        let breakTime = (appData.breakTime ?? 0) + addedRestTime;
+        let breakTime = (compoMain.data.breakTime ?? 0) + addedRestTime;
         let breakTimeInSeconds = Math.floor( breakTime / 1000);
         let timeStr = utils.SecondsToHMS(breakTimeInSeconds)
         $('._txtEstRestTime').replaceChildren(timeStr);
@@ -200,8 +207,6 @@ let ui = (function() {
         localStorage.removeItem('NDQ1MjA3NzI-appData-v2')
         localStorage.removeItem('NDQ1MjA3NzI-appData-v3')
     
-        energyPoint = appData.workDuration;
-    
         location.reload();
     }
 
@@ -210,25 +215,27 @@ let ui = (function() {
         let isConfirm = await windog.confirm('Are you sure?');
         if (!isConfirm) return;
     
-        appData.endTime = null;
-        appData.startTime = null;
-        appData.workTimeElapsed = 0;
+        compoMain.data.endTime = null;
+        compoMain.data.startTime = null;
+        compoMain.data.workTimeElapsed = 0;
     
         viewStateUtil.Remove('mode', ['recovery']);
-        $('._txt').replaceChildren(utils.SecondsToHMS(appData.workDuration));
+        $('._txt').replaceChildren(utils.SecondsToHMS(compoMain.data.workDuration));
         $('._txtRestoreTime').replaceChildren();
     
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
     }
 
     async function EditWorkDuration_() {
-        let userVal = await windog.prompt('Work session duration (in minutes)', appData.workDuration / 60);
+        let userVal = await windog.prompt('Work session duration (in minutes)', compoMain.data.workDuration / 60);
         if (userVal === null) return;
     
-        appData.workDuration = parseInt(userVal) * 60;
-        restoreRateInSeconds = Math.floor(appData.workDuration / local.breakDuration);
+        compoMain.data.workDuration = parseInt(userVal) * 60;
+        restoreRateInSeconds = Math.floor(compoMain.data.workDuration / local.breakDuration);
 
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
     
         location.reload();
     }
@@ -237,11 +244,12 @@ let ui = (function() {
     function ApplyRatio() {
         let inputEl = $('._inWorkRestRatio');
         let workBreakRatio = parseFloat(inputEl.value);
-        let breakDuration = Math.ceil(appData.workDuration * workBreakRatio);
+        let breakDuration = Math.ceil(compoMain.data.workDuration * workBreakRatio);
 
-        appData.workBreakRatio = workBreakRatio;
+        compoMain.data.workBreakRatio = workBreakRatio;
 
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
 
         location.reload();
     }
@@ -250,12 +258,12 @@ let ui = (function() {
         let inputEl = evt.target;
 
         let workBreakRatio = parseFloat(inputEl.value);
-        let breakDuration = Math.ceil(appData.workDuration * workBreakRatio);
+        let breakDuration = Math.ceil(compoMain.data.workDuration * workBreakRatio);
 
         previewRatio({
             workBreakRatio,
             breakDuration,
-            workDuration: appData.workDuration,
+            workDuration: compoMain.data.workDuration,
         });
     }
 
@@ -264,9 +272,10 @@ let ui = (function() {
         if (userVal === null) return;
 
         local.breakDuration = parseInt(userVal) * 60;
-        restoreRateInSeconds = Math.floor(appData.workDuration / local.breakDuration);
+        restoreRateInSeconds = Math.floor(compoMain.data.workDuration / local.breakDuration);
         
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
     }
 
 
@@ -279,7 +288,7 @@ let ui = (function() {
     }
 
     function refreshRatio() {
-        let {workBreakRatio, workDuration} = appData;
+        let {workBreakRatio, workDuration} = compoMain.data;
         let {breakDuration} = local;
         previewRatio({
             workBreakRatio,
@@ -322,8 +331,12 @@ let ui = (function() {
         viewStateUtil.Add('mode', ['recovery']);
         viewStateUtil.Set('timerState', ['recovery']);
         RefreshBreakTime();
-        window.Android?.cancelScheduledNotification?.();
-        window.Android?.scheduleNotificationInSeconds?.(Math.floor(appData.breakTimeDuration / 1000));
+        try {
+            window.Android?.cancelScheduledNotification?.();
+            window.Android?.scheduleNotificationInSeconds?.(Math.floor(compoMain.data.breakTimeDuration / 1000));
+        } catch (err) {
+            console.error(err);
+        }
         
         local.breakTimeInterval = window.setInterval(RefreshBreakTime, local.refreshInterval);
     }
@@ -331,18 +344,18 @@ let ui = (function() {
     // # stop rest
     function StopRest(opt) {
         let now = Date.now();
-        let breakTimeStart = appData.breakTimeStart;
+        let breakTimeStart = compoMain.data.breakTimeStart;
         let elapsedTime = now - breakTimeStart;
         let restoredMs = elapsedTime * restoreRateInSeconds;
-        let runningTime = (appData.workDuration * 1000 - appData.workTimeElapsed) + restoredMs;
-        console.log(runningTime)
+        let runningTime = (compoMain.data.workDuration * 1000 - compoMain.data.workTimeElapsed) + restoredMs;
 
-        appData.breakTimeStart = null;
-        appData.breakTimeDuration = 0;
-        appData.breakTime = Math.max(0, appData.breakTime - elapsedTime);
-        appData.workTimeElapsed = Math.max(0, appData.workTimeElapsed - restoredMs);
+        compoMain.data.breakTimeStart = null;
+        compoMain.data.breakTimeDuration = 0;
+        compoMain.data.breakTime = Math.max(0, compoMain.data.breakTime - elapsedTime);
+        compoMain.data.workTimeElapsed = Math.max(0, compoMain.data.workTimeElapsed - restoredMs);
 
-        app.Save();
+        compoMain.Commit();
+        appData.Save();
 
         if (opt?.isPlayAudio) {
             app.TaskPlayAlarmAudio();
@@ -354,7 +367,11 @@ let ui = (function() {
         viewStateUtil.Set('timerState', ['idle']);
         ui.RefreshRestTime();
         if (!opt?.isBySystem) {
-            window.Android?.cancelScheduledNotification?.();
+            try {
+                window.Android?.cancelScheduledNotification?.();
+            } catch (err) {
+                console.error(err)
+            }
         }
 
         if (runningTime < 0) {
@@ -377,11 +394,11 @@ let ui = (function() {
 
     function RefreshBreakTime() {
         let now = Date.now();
-        let breakTimeStart = appData.breakTimeStart;
-        let breakTimeDuration = appData.breakTimeDuration;
+        let breakTimeStart = compoMain.data.breakTimeStart;
+        let breakTimeDuration = compoMain.data.breakTimeDuration;
         let timeLeft = (breakTimeStart + breakTimeDuration) - now
 
-        if (timeLeft <= 0) {
+        if (compoMain.data.breakTimeStart && timeLeft <= 0) {
             StopRest({
                 isBySystem: true,
                 isPlayAudio: local.isRemindMe,
@@ -389,8 +406,8 @@ let ui = (function() {
             return;
         }
 
-        let restoredMs = (now - appData.breakTimeStart) * restoreRateInSeconds;
-        let runningTime = (appData.workDuration * 1000 - appData.workTimeElapsed) + restoredMs;
+        let restoredMs = (now - compoMain.data.breakTimeStart) * restoreRateInSeconds;
+        let runningTime = (compoMain.data.workDuration * 1000 - compoMain.data.workTimeElapsed) + restoredMs;
         
         if (runningTime < 0) {
             let restoredWorkTime = Math.ceil(-runningTime / 1000);
@@ -406,8 +423,7 @@ let ui = (function() {
 
         SetBreakDuration();
         
-        energyPoint = Math.min(appData.energyPoint ?? appData.workDuration, appData.workDuration);
-        restoreRateInSeconds = Math.ceil(appData.workDuration / local.breakDuration);
+        restoreRateInSeconds = Math.ceil(compoMain.data.workDuration / local.breakDuration);
 
         refreshRatio();
         RefreshRestTime();
@@ -430,23 +446,27 @@ let ui = (function() {
           event.preventDefault();
         });
 
-        $('._limit').replaceChildren(utils.SecondsToHMS(appData.workDuration));
-        // $('._txt').replaceChildren(utils.SecondsToHMS(energyPoint));
+        $('._limit').replaceChildren(utils.SecondsToHMS(compoMain.data.workDuration));
 
         refreshWorkTime();
-        if (appData.startTime) {
+        if (compoMain.data.startTime) {
             startWorkTimer();
         }
 
-        if (appData.breakTimeStart) {
+        if (compoMain.data.breakTimeStart) {
             StartBreakTime();
         }
 
         refreshTimerState();
+
+        new Promise(async () => {
+            await wait.Until(() => (typeof(uiCustomBreak) != 'undefined'), null, 100);
+            uiCustomBreak.Init();
+        })
     }
 
     function refreshTimerState() {
-        if (appData.startTime) {
+        if (compoMain.data.startTime) {
             viewStateUtil.Set('timerState', ['started']);
         }
     }

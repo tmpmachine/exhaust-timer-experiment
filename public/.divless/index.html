@@ -32,8 +32,9 @@
         ]
       ]
 
+      <!-- # version -->
       [ .d-flex .justify-content-end
-        [small 'v1.0']
+        [small 'v1.2x']
       ]
       [ .void .void-1x]
 
@@ -121,6 +122,15 @@
             ]
           ]
           [ .void .void-1x]
+
+          <!-- # suggestion -->
+          [ .text-align-start
+            [
+              [small 'Recent custom rest time :']
+            ]
+            [ .void .void-half]
+            [ ._listBreakSuggestion .wg-BreakSuggestion data-onclick="handle-click-recent-rest"]
+          ]
 
           <!-- # recovery, # restore -->
           [ data-view-group="timerState" data-view-name="recovery"
@@ -252,6 +262,15 @@
             [btn 'Cancel']
           ]
         </form>
+      ]
+    ]
+  </template>
+  <template id="tmp-list-break-suggestion">
+    [ data-kind="item" data-id="" .item data-duration=""
+      <!-- # tmp suggestion -->
+      [s '00:00' ._labelValue .label]
+      [ .action data-action="delete"
+        [btn 'x']
       ]
     ]
   </template>
