@@ -46,6 +46,8 @@ let compoMain = (function() {
     }
     
     function restoreData(noRefData) {
+      if (!data) return;
+      
       for (let key in data) {
         if (typeof(noRefData[key]) != 'undefined' && typeof(noRefData[key]) == typeof(data[key])) {
           data[key] = noRefData[key];

@@ -206,6 +206,7 @@ let ui = (function() {
         localStorage.removeItem('NDQ1MjA3NzI-appData')
         localStorage.removeItem('NDQ1MjA3NzI-appData-v2')
         localStorage.removeItem('NDQ1MjA3NzI-appData-v3')
+        localStorage.removeItem('NDQ1MjA3NzI-appData-v4')
     
         location.reload();
     }

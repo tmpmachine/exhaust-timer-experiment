@@ -17,7 +17,7 @@ let appData = (function() {
 
     // # local
     let local = {
-        storeKey: 'NDQ1MjA3NzI-appData-v3',
+        storeKey: 'NDQ1MjA3NzI-appData-v4',
     };
     
     function SetComponentData(key, componentData) {
