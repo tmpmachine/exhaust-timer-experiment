@@ -229,10 +229,10 @@ let ui = (function() {
     }
 
     async function EditWorkDuration_() {
-        let userVal = await windog.prompt('Work session duration (in minutes)', compoMain.data.workDuration / 60);
+        let userVal = await windog.prompt('Work session duration (in HMS format, e.g. 7h30m)', utils.SecondsToHMS(compoMain.data.workDuration));
         if (userVal === null) return;
     
-        compoMain.data.workDuration = parseInt(userVal) * 60;
+        compoMain.data.workDuration = Math.floor(utils.ParseHmsToMs(userVal) / 1000);
         restoreRateInSeconds = Math.floor(compoMain.data.workDuration / local.breakDuration);
 
         compoMain.Commit();
