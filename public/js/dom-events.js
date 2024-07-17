@@ -13,6 +13,7 @@ let DOMEvents = (function() {
           'instant-recovery': () => ui.Recover_(),
           'navigate': (evt) => ui.NavigateScreen(evt),
           'handle-click-recent-rest': (evt) => uiCustomBreak.HandleClickList(evt),
+          'edit-rest-time': () => ui.EditRestTime(),
         },
         oninput: {
           'update-ratio': (evt) => ui.UpdateRatio(evt),

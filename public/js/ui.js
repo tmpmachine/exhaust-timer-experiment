@@ -24,6 +24,7 @@ let ui = (function() {
         GetLiveRestTime: getLiveRestTime,
         TakeCustomRest, 
         StartBreakTimeFromMsDuration: startBreakTimeFromMsDuration,
+        EditRestTime,
     };
 
     // # local
@@ -37,6 +38,24 @@ let ui = (function() {
     };
 
     let restoreRateInSeconds = 0;
+
+
+    async function EditRestTime() {
+        let breakTime = getLiveRestTime();
+        let breakTimeInSeconds = Math.floor( breakTime / 1000);
+        let defaultVal = utils.SecondsToHMS(breakTimeInSeconds);
+
+        let userVal = await windog.prompt('Edit break time (HMS format)', defaultVal);
+        if (userVal === null) return;
+
+        compoMain.data.startTime = Date.now();
+        compoMain.data.breakTime = utils.ParseHmsToMs(userVal);
+        
+        compoMain.Commit();
+        appData.Save();
+
+        RefreshRestTime();
+    }
 
     // # start timer
     function Start() {

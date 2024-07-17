@@ -34,7 +34,7 @@
 
       <!-- # version -->
       <div class="d-flex justify-content-end">
-        <small>v1.2x</small>
+        <small>v1.3</small>
       </div>
       <div class="void void-1x"></div>
 
@@ -120,6 +120,9 @@
             <div>
               Rest time: <span class="_txtEstRestTime"></span>
             </div>
+            <div>
+              <button class="skin-btn-default" data-onclick="edit-rest-time">Edit</button>
+            </div>
           </div>
           <div class="void void-1x"></div>
 
@@ -163,14 +166,23 @@
 
 
       <!-- PWA cache manager -->
+      <!-- # cacge -->
       <div>
         <small>Updates & Offline Access</small>
       </div>
       <div class="void void-half"></div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;">
-        <button class="skin-btn-default" onclick="pwaCacher.Cache()">Check for updates</button>
-        <button class="skin-btn-default" onclick="pwaCacher.ClearCache()">Remove app cache</button>
+        <button class="skin-btn-default" onclick="pwaCacher.Cache()">Cache</button>
+        <button class="skin-btn-default" onclick="pwaCacher.ClearCache()">Remove offline cache</button>
       </div>
+      <ul>
+        <li>
+          Cache: download latest version & enable offline access.
+        </li>
+        <li>
+          Remove offline cache: always load latest version (requires internet connection).
+        </li>
+      </ul>
       <hr/>
       <div class="void void-2x"></div>
     

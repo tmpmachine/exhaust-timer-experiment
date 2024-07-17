@@ -34,7 +34,7 @@
 
       <!-- # version -->
       [ .d-flex .justify-content-end
-        [small 'v1.2x']
+        [small 'v1.3']
       ]
       [ .void .void-1x]
 
@@ -120,6 +120,9 @@
             [ 
               Rest time: [s ._txtEstRestTime]
             ]
+            [
+              [btn 'Edit' .skin-btn-default data-onclick="edit-rest-time"]
+            ]
           ]
           [ .void .void-1x]
 
@@ -163,13 +166,22 @@
 
 
       <!-- PWA cache manager -->
+      <!-- # cacge -->
       [
         [small 'Updates & Offline Access']
       ]
       [ .void .void-half]
       [ {d:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center}
-        [btn 'Check for updates' .skin-btn-default onclick="pwaCacher.Cache()"]
-        [btn 'Remove app cache' .skin-btn-default onclick="pwaCacher.ClearCache()"]
+        [btn 'Cache' .skin-btn-default onclick="pwaCacher.Cache()"]
+        [btn 'Remove offline cache' .skin-btn-default onclick="pwaCacher.ClearCache()"]
+      ]
+      [ul
+        [li 
+          Cache: download latest version & enable offline access.
+        ]
+        [li
+          Remove offline cache: always load latest version (requires internet connection).
+        ]
       ]
       [hr]
       [ .void .void-2x]
