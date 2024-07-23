@@ -378,7 +378,7 @@ let ui = (function() {
         appData.Save();
 
         if (opt?.isPlayAudio) {
-            app.TaskPlayAlarmAudio();
+            compoMain.TaskPlayAlarmAudio();
             ui.TurnOnScreen();
             local.isRemindMe = false;
         }

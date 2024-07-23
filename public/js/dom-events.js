@@ -5,11 +5,11 @@ let DOMEvents = (function() {
           'set-break': () => ui.SetBreak(),
           'set-limit': () => ui.EditWorkDuration_(),
           'apply-ratio': () => ui.ApplyRatio(),
-          'pick-audio': () => app.SetAlarmAudio(), 
-          'remove-audio': () => app.TaskRemoveAlarmAudio(), 
+          'pick-audio': () => compoMain.SetAlarmAudio(), 
+          'remove-audio': () => compoMain.TaskRemoveAlarmAudio(), 
           'reset-data': () => ui.ResetData_(), 
-          'test-audio': () => app.TaskPlayAlarmAudio(), 
-          'stop-test-audio': () => app.StopTestAlarmAudio(), 
+          'test-audio': () => compoMain.TaskPlayAlarmAudio(), 
+          'stop-test-audio': () => compoMain.StopTestAlarmAudio(), 
           'instant-recovery': () => ui.Recover_(),
           'navigate': (evt) => ui.NavigateScreen(evt),
           'handle-click-recent-rest': (evt) => uiCustomBreak.HandleClickList(evt),
@@ -17,7 +17,7 @@ let DOMEvents = (function() {
         },
         oninput: {
           'update-ratio': (evt) => ui.UpdateRatio(evt),
-          'handle-input-alarm-volume': (evt) => app.HandleInputAlarmVolume(evt),
+          'handle-input-alarm-volume': (evt) => compoMain.HandleInputAlarmVolume(evt),
         },
         
     };
